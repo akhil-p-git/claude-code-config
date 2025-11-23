@@ -1,0 +1,74 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(*)",
+      "Write(*)",
+      "Edit(*)",
+      "Glob(*)",
+      "Grep(*)",
+      "Bash(git:*)",
+      "Bash(npm:*)",
+      "Bash(pnpm:*)",
+      "Bash(yarn:*)",
+      "Bash(node:*)",
+      "Bash(python:*)",
+      "Bash(python3:*)",
+      "Bash(pip:*)",
+      "Bash(gcc:*)",
+      "Bash(make:*)",
+      "Bash(pytest:*)",
+      "Bash(jest:*)",
+      "Bash(vitest:*)",
+      "Bash(gh:*)",
+      "Bash(docker:*)",
+      "Bash(curl:*)",
+      "Bash(wget:*)"
+    ],
+    "deny": [
+      "Bash(rm:-rf /)",
+      "Bash(rm:-rf ~)",
+      "Bash(dd:*)",
+      "Bash(mkfs:*)",
+      "Bash(format:*)"
+    ]
+  },
+  "mcpServers": {
+    "taskmaster": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "task-master-ai"
+      ],
+      "env": {
+        "ANTHROPIC_API_KEY": "$ANTHROPIC_API_KEY"
+      }
+    },
+    "git": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-git"
+      ]
+    },
+    "github": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-github"
+      ],
+      "env": {
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "$GITHUB_TOKEN"
+      }
+    }
+  },
+  "env": {
+    "EDITOR": "vim",
+    "GIT_EDITOR": "vim"
+  },
+  "verbose": false,
+  "spinnerTipsEnabled": true,
+  "sandbox": {
+    "enabled": false,
+    "allowUnsandboxedCommands": true
+  }
+}

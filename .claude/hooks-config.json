@@ -1,0 +1,70 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Write(*/.env)",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo '⚠️  WARNING: Writing .env file. Ensure .gitignore includes .env' >&2",
+            "timeout": 5
+          }
+        ]
+      },
+      {
+        "matcher": "Write(*taskmaster*)",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo '⚠️  WARNING: Taskmaster files should never be committed to git' >&2 && grep -q '.taskmaster' .gitignore 2>/dev/null || (echo '❌ ERROR: .taskmaster/ not in .gitignore!' >&2 && exit 2)",
+            "timeout": 5
+          }
+        ]
+      },
+      {
+        "matcher": "Bash(git:add *.env*)",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo '❌ ERROR: Attempting to stage .env file! This will expose secrets.' >&2 && exit 2",
+            "timeout": 5
+          }
+        ]
+      },
+      {
+        "matcher": "Bash(git:add *.taskmaster*)",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo '❌ ERROR: Attempting to stage .taskmaster/ files! These should not be committed.' >&2 && exit 2",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Write(.gitignore)",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "grep -q '.env' .gitignore && grep -q '.taskmaster' .gitignore && echo '✓ .gitignore includes .env and .taskmaster' || echo '⚠️  .gitignore may be missing critical entries' >&2",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo '🚀 Claude Code Session Started' && git branch --show-current 2>/dev/null | sed 's/^/📍 Branch: /' || true",
+            "timeout": 5
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,35 @@
+# SECURITY - NEVER COMMIT
+.env
+.env.*
+!.env.example
+*.key
+*.pem
+.taskmaster/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+env/
+ENV/
+*.egg-info/
+dist/
+build/
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# Misc
+.DS_Store
+*.log

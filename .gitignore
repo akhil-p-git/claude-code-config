@@ -1,0 +1,9 @@
+# Backup files created by setup script
+*.backup
+
+# OS files
+.DS_Store
+
+# Local overrides (not shared)
+.local/
+local-*.sh
