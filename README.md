@@ -1,6 +1,55 @@
-# Claude Code Configuration
+# Claude Code Ultimate Configuration
 
-Personal Claude Code dotfiles for maximum productivity across all machines.
+🚀 **The complete Claude Code setup with custom commands, AI models, and specialized agents**
+
+Transform your Claude Code CLI into a powerhouse development environment with:
+- **6 Git workflow commands** for effortless version control
+- **12 AI model integrations** (GPT-4, Claude Opus, Gemini, Llama, and more)
+- **11 specialized AI agents** (code reviewers, security auditors, performance optimizers)
+- **Security-first approach** with automatic secret detection
+- **100% portable** across all your machines
+
+---
+
+## 📚 Documentation
+
+- **[COMMANDS_REFERENCE.md](COMMANDS_REFERENCE.md)** - Complete guide to all commands, models, and agents
+- **[QUICK_START.md](QUICK_START.md)** - 5-minute setup guide
+- **[AGENTS_GUIDE.md](AGENTS_GUIDE.md)** - Detailed guide to specialized AI agents
+- **[MODEL_USAGE.md](MODEL_USAGE.md)** - Multi-model configuration and usage
+- **[.env.example](.env.example)** - Required environment variables
+
+---
+
+## ⚡ Quick Access
+
+```bash
+# Start Claude Code
+claude
+
+# Git workflows
+/git-quick      # Quick commit and push
+/git-review     # Security-aware code review
+/pr             # Create GitHub pull request
+
+# AI models
+/gpt4o [question]     # Fast GPT-4
+/opus [question]      # Powerful Claude Opus
+/compare [question]   # Ask multiple models
+
+# Specialized agents
+@code-reviewer        # Review code quality
+@security-auditor     # Security audit
+@frontend-expert      # React/UI help
+
+# Utilities
+/security-check       # Scan for secrets
+/ask [question]       # Quick Q&A
+/agents              # List all agents
+/models              # List all AI models
+```
+
+---
 
 ## Features
 
