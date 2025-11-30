@@ -13,6 +13,7 @@ Transform your Claude Code CLI into a powerhouse development environment with:
 
 ## 📚 Documentation
 
+- **[WORKFLOW.md](WORKFLOW.md)** - Optimal AI workflow for your subscriptions (Claude, Cursor, ChatGPT, Gemini, Perplexity)
 - **[COMMANDS_REFERENCE.md](COMMANDS_REFERENCE.md)** - Complete guide to all commands, models, and agents
 - **[QUICK_START.md](QUICK_START.md)** - 5-minute setup guide
 - **[AGENTS_GUIDE.md](AGENTS_GUIDE.md)** - Detailed guide to specialized AI agents
@@ -35,6 +36,7 @@ claude
 # AI models
 /gpt4o [question]     # Fast GPT-4
 /opus [question]      # Powerful Claude Opus
+/perplexity [question] # Web-connected research
 /compare [question]   # Ask multiple models
 
 # Specialized agents

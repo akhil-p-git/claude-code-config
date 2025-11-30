@@ -49,10 +49,15 @@ Here are all the models you can access with your configured API keys:
 - `/gemini your question` - Google Gemini
 - `/llama your question` - Meta Llama
 - `/deepseek your question` - DeepSeek V3
+- `/mistral your question` - Mistral Large
+- `/perplexity your question` - Perplexity Sonar (web-connected)
 - `/compare your question` - Query multiple models at once
 
 **Custom model:**
 Use `/query model-id your question` to query any OpenRouter model by ID.
+
+**Complete reference:**
+Use `/allmodel` for full model list with selection guide.
 
 **Full model list:**
 Visit https://openrouter.ai/models for detailed pricing and capabilities.
