@@ -1,5 +1,103 @@
 # Global Coding Standards & Guidelines
 
+## Agent & Skill Automation (CRITICAL)
+
+### Automatic Agent Selection
+ALWAYS automatically spawn the appropriate agent(s) based on the task. DO NOT ask permission - just use them:
+
+| Task Type | Agent(s) to Spawn |
+|-----------|-------------------|
+| Code cleanup, refactoring | `@refactorer` |
+| Bug investigation | `@debugger` |
+| Security review | `@security-auditor` |
+| Performance issues | `@performance-optimizer` |
+| API design | `@api-designer` |
+| Database work | `@database-expert` |
+| System design | `@architect` |
+| Writing tests | `@test-writer` |
+| Code review | `@code-reviewer` |
+| Documentation | `@docs-writer` |
+| React/UI work | `@frontend-expert` |
+| Node.js/API work | `@backend-expert` |
+| DevOps/CI/CD | `@devops-expert` |
+| Accessibility | `@accessibility-expert` |
+| Data pipelines | `@data-engineer` |
+| Mobile dev | `@mobile-expert` |
+| AI/ML integration | `@ai-engineer` |
+| Monorepo setup | `@monorepo-expert` |
+| UX issues | `@ux-reviewer` |
+| Regex help | `@regex-expert` |
+| Git problems | `@git-expert` |
+| Migrations/upgrades | `@migration-expert` |
+| Codebase exploration | Explore agent (built-in) |
+
+### Automatic Parallel Agents (Swarms)
+Spawn multiple agents IN PARALLEL when the task benefits from multiple perspectives:
+
+**Always swarm for:**
+- "Review this code/PR" → `@code-reviewer` + `@security-auditor` + `@performance-optimizer`
+- "Audit this project" → `@security-auditor` + `@accessibility-expert` + `@performance-optimizer`
+- "Check code quality" → `@code-reviewer` + `@refactorer` + `@test-writer`
+- "Prepare for production" → `@security-auditor` + `@performance-optimizer` + `@devops-expert`
+- Complex codebase questions → Multiple Explore agents on different areas
+
+**Swarm when user says:**
+- "thoroughly review/check/audit"
+- "comprehensive analysis"
+- "check everything"
+- "multiple perspectives"
+- "in parallel"
+
+### Automatic Skill Invocation
+Use skills automatically when the task matches - DO NOT ask:
+
+| Task | Skill |
+|------|-------|
+| Create/edit Word docs | `docx` |
+| Create/edit PDFs | `pdf` |
+| Create/edit spreadsheets | `xlsx` |
+| Create/edit presentations | `pptx` |
+| Build React artifacts | `web-artifacts-builder` |
+| Create visual designs | `canvas-design` |
+| Frontend UI components | `frontend-design` |
+| Generative art | `algorithmic-art` |
+| Test web apps | `webapp-testing` |
+| Build MCP servers | `mcp-builder` |
+| Create new skills | `skill-creator` |
+| Style with themes | `theme-factory` |
+| Anthropic branding | `brand-guidelines` |
+| Internal comms | `internal-comms` |
+| Co-author docs | `doc-coauthoring` |
+| Slack GIFs | `slack-gif-creator` |
+
+### Behavior Rules
+1. **Don't ask** - Just spawn agents/skills when appropriate
+2. **Prefer parallel** - When 2+ agents are relevant, run them simultaneously
+3. **Combine results** - Synthesize multi-agent output into coherent response
+4. **Use Explore freely** - For any codebase understanding task
+5. **Chain when needed** - e.g., `@debugger` finds issue → `@refactorer` fixes it
+
+---
+
+## Git Operations (CRITICAL)
+
+**ALWAYS use these commands for git operations to bypass Claude Code's restricted GITHUB_TOKEN:**
+
+```bash
+# Fetch
+GIT_ASKPASS="" GITHUB_TOKEN="" git fetch origin
+
+# Push
+GIT_ASKPASS="" GITHUB_TOKEN="" git push origin <branch>
+
+# Pull
+GIT_ASKPASS="" GITHUB_TOKEN="" git pull origin <branch>
+```
+
+Never use plain `git push`, `git pull`, or `git fetch` - they will fail with 403 errors.
+
+---
+
 ## Project Architecture
 
 ### Frontend/Backend Separation
