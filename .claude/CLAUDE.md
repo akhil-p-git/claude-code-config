@@ -135,6 +135,10 @@ project/
   - Prefix interfaces with `I` only if needed for clarity
 
 ### React
+
+> Full reference: `.claude/knowledge/react-best-practices.md`
+
+**Core Standards:**
 - **Use functional components** with hooks (no class components)
 - **File structure:**
   - One component per file
@@ -152,6 +156,57 @@ project/
   - Local state with `useState` for component-specific data
   - Context API for shared app state
   - Consider Zustand/Redux for complex global state
+
+**Performance Rules (CRITICAL):**
+
+*Waterfalls (#1 Performance Killer):*
+```tsx
+// BAD - Sequential (3x slower)
+const a = await fetchA(); const b = await fetchB();
+// GOOD - Parallel
+const [a, b] = await Promise.all([fetchA(), fetchB()]);
+```
+
+*Bundle Optimization:*
+```tsx
+// BAD - Barrel imports (200-800ms cold start penalty)
+import { Icon } from 'lucide-react'
+// GOOD - Direct imports
+import Icon from 'lucide-react/dist/esm/icons/icon'
+// BEST - Next.js 13.5+ optimizePackageImports config
+
+// BAD - Heavy component in main bundle
+import { MonacoEditor } from './editor'
+// GOOD - Dynamic import
+const Editor = dynamic(() => import('./editor'), { ssr: false })
+```
+
+*Re-render Prevention:*
+```tsx
+// BAD - Object dependency (re-runs on any user change)
+useEffect(() => {}, [user])
+// GOOD - Primitive dependency
+useEffect(() => {}, [user.id])
+
+// BAD - Expensive initial state (runs every render)
+useState(buildIndex(data))
+// GOOD - Lazy initialization (runs once)
+useState(() => buildIndex(data))
+
+// BAD - Renders "0" when count is 0
+{count && <Badge />}
+// GOOD - Explicit conditional
+{count > 0 ? <Badge /> : null}
+```
+
+*Server Components:*
+```tsx
+// Use React.cache() for request deduplication
+const getUser = cache(async (id) => db.user.findUnique({ where: { id } }))
+
+// Minimize RSC serialization - pass only needed fields
+<ClientComponent userName={user.name} />  // Not: user={user}
+```
 
 ### Node.js/Backend
 - **Use async/await** over callbacks
@@ -270,11 +325,32 @@ project/
 
 ## Performance Standards
 
-### Frontend
+### Frontend (React/Next.js)
+
+> Priority order based on impact (see `.claude/knowledge/react-best-practices.md`):
+
+**CRITICAL:**
+- Eliminate waterfalls - use `Promise.all()` for independent operations
+- Bundle optimization - `next/dynamic`, avoid barrel imports
+- Preload on user intent (hover/focus)
+
+**HIGH:**
+- Server deduplication - `React.cache()` for shared queries
+- Client deduplication - SWR/React Query
+- Minimize RSC serialization - pass only needed fields
+- Strategic Suspense boundaries
+
+**MEDIUM:**
+- Extract expensive work into memoized components
+- Primitive deps in useEffect (not objects)
+- Lazy state init: `useState(() => ...)`
+- Use `startTransition` for non-urgent updates
+- Hoist static JSX outside components
+- Use Set/Map for repeated lookups
+
+**General:**
 - Lazy load routes and heavy components
 - Optimize images (WebP, correct sizes)
-- Minimize bundle size (code splitting)
-- Use React.memo for expensive components
 - Debounce/throttle expensive operations
 
 ### Backend

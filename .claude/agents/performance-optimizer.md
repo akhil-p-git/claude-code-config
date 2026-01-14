@@ -18,14 +18,44 @@ Optimize for performance:
 
 ## Optimization Areas
 
-**Frontend:**
-- Bundle size reduction
-- Lazy loading / code splitting
-- Image optimization
-- Caching strategies
-- Render performance (React.memo, useMemo)
-- Debounce/throttle expensive operations
-- Virtual scrolling for long lists
+**Frontend (React/Next.js):**
+
+Reference: `.claude/knowledge/react-best-practices.md`
+
+*Critical Priority:*
+- Eliminate async waterfalls → `Promise.all()`
+- Bundle size reduction → `next/dynamic`, direct imports
+- Avoid barrel file imports → 200-800ms cold start penalty
+
+*High Priority:*
+- Server request deduplication → `React.cache()`
+- Client request deduplication → SWR/React Query
+- Minimize RSC serialization → pass only needed fields
+- Strategic Suspense boundaries
+
+*Medium Priority:*
+- Re-render prevention (memoized components, primitive deps)
+- Lazy state initialization: `useState(() => expensive())`
+- Use `startTransition` for non-urgent updates
+- Hoist static JSX outside components
+
+*Code Patterns to Flag:*
+```tsx
+// Sequential awaits (waterfall)
+await a(); await b();  // -> Promise.all([a(), b()])
+
+// Barrel imports
+import { X } from 'lib'  // -> import X from 'lib/dist/X'
+
+// Object dependencies
+useEffect(() => {}, [user])  // -> [user.id]
+
+// Expensive initial state
+useState(compute())  // -> useState(() => compute())
+
+// Falsy conditional rendering
+{count && <Badge />}  // -> {count > 0 ? <Badge /> : null}
+```
 
 **Backend:**
 - Database query optimization
@@ -37,16 +67,18 @@ Optimize for performance:
 - CDN usage
 
 **General:**
-- Algorithm complexity (O(n) vs O(n²))
-- Data structure choice
+- Algorithm complexity (O(n) vs O(n^2))
+- Data structure choice (Set/Map for lookups)
 - Memory usage
 - Network requests
 - Concurrent operations
+- Early returns from functions
 
 ## Profiling Tools
 
 - Chrome DevTools (frontend)
 - React DevTools Profiler
+- Next.js bundle analyzer
 - Node.js profiler
 - Database query analyzers
 - Load testing (k6, Artillery)
