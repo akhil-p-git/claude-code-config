@@ -1,0 +1,60 @@
+{
+  "_comment": "This file is for machine-specific settings. Copy to settings.local.json and customize.",
+  "_note": "settings.local.json should be in .gitignore - never commit real API keys!",
+
+  "env": {
+    "ANTHROPIC_API_KEY": "sk-ant-xxxxxxxxxxxxxxxxxxxxx",
+    "OPENAI_API_KEY": "sk-xxxxxxxxxxxxxxxxxxxxx",
+    "OPENROUTER_API_KEY": "sk-or-xxxxxxxxxxxxxxxxxxxxx",
+    "GITHUB_TOKEN": "ghp_xxxxxxxxxxxxxxxxxxxxx",
+    "PERPLEXITY_API_KEY": "pplx-xxxxxxxxxxxxxxxxxxxxx",
+
+    "_optional_keys": {
+      "GOOGLE_API_KEY": "AIzaxxxxxxxxxxxxxxxxxxxxx",
+      "LINEAR_API_KEY": "lin_api_xxxxxxxxxxxxxxxxxxxxx",
+      "SLACK_BOT_TOKEN": "xoxb-xxxxxxxxxxxxxxxxxxxxx"
+    }
+  },
+
+  "mcpServers": {
+    "_comment": "Add machine-specific MCP servers here",
+
+    "linear": {
+      "_enabled": false,
+      "command": "npx",
+      "args": ["-y", "@anthropic/mcp-linear"],
+      "env": {
+        "LINEAR_API_KEY": "$LINEAR_API_KEY"
+      }
+    },
+
+    "slack": {
+      "_enabled": false,
+      "command": "npx",
+      "args": ["-y", "@anthropic/mcp-slack"],
+      "env": {
+        "SLACK_BOT_TOKEN": "$SLACK_BOT_TOKEN"
+      }
+    },
+
+    "postgres": {
+      "_enabled": false,
+      "command": "npx",
+      "args": ["-y", "@anthropic/mcp-postgres"],
+      "env": {
+        "DATABASE_URL": "postgresql://user:password@localhost:5432/mydb"
+      }
+    }
+  },
+
+  "permissions": {
+    "_comment": "Add machine-specific permissions here",
+    "allow": [],
+    "deny": []
+  },
+
+  "verbose": false,
+  "sandbox": {
+    "enabled": false
+  }
+}

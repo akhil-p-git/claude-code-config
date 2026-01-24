@@ -40,6 +40,26 @@
             "timeout": 5
           }
         ]
+      },
+      {
+        "matcher": "Bash(git:push*)",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo '🔍 Pre-push check: Verifying no secrets in staged files...' >&2 && git diff --cached --name-only 2>/dev/null | grep -E '\\.env$|\\.key$|\\.pem$' && (echo '❌ ERROR: Sensitive files detected in commit!' >&2 && exit 2) || echo '✓ No secrets detected' >&2",
+            "timeout": 10
+          }
+        ]
+      },
+      {
+        "matcher": "Bash(git:commit*)",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "git diff --cached --name-only 2>/dev/null | grep -qE '\\.env$|\\.key$|\\.pem$|secrets/' && (echo '❌ ERROR: Attempting to commit sensitive files!' >&2 && exit 2) || true",
+            "timeout": 5
+          }
+        ]
       }
     ],
     "PostToolUse": [
@@ -52,6 +72,46 @@
             "timeout": 5
           }
         ]
+      },
+      {
+        "matcher": "Bash(git:commit*)",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo '✓ Commit created successfully' && git log --oneline -1 2>/dev/null | head -1",
+            "timeout": 5
+          }
+        ]
+      },
+      {
+        "matcher": "Bash(git:push*)",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo '✓ Push completed successfully' >&2",
+            "timeout": 5
+          }
+        ]
+      },
+      {
+        "matcher": "Bash(npm:test*)",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo '📊 Test run completed' >&2",
+            "timeout": 5
+          }
+        ]
+      },
+      {
+        "matcher": "Bash(pytest*)",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo '📊 Pytest run completed' >&2",
+            "timeout": 5
+          }
+        ]
       }
     ],
     "SessionStart": [
@@ -61,6 +121,18 @@
           {
             "type": "command",
             "command": "echo '🚀 Claude Code Session Started' && git branch --show-current 2>/dev/null | sed 's/^/📍 Branch: /' || true",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "SessionEnd": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo '👋 Session ended. Remember to commit any pending changes!' >&2",
             "timeout": 5
           }
         ]
