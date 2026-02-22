@@ -29,6 +29,7 @@ ALWAYS automatically spawn the appropriate agent(s) based on the task. DO NOT as
 | Regex help | `@regex-expert` |
 | Git problems | `@git-expert` |
 | Migrations/upgrades | `@migration-expert` |
+| Game development | `@game-developer` |
 | Codebase exploration | Explore agent (built-in) |
 
 ### Automatic Parallel Agents (Swarms)
@@ -39,6 +40,7 @@ Spawn multiple agents IN PARALLEL when the task benefits from multiple perspecti
 - "Audit this project" → `@security-auditor` + `@accessibility-expert` + `@performance-optimizer`
 - "Check code quality" → `@code-reviewer` + `@refactorer` + `@test-writer`
 - "Prepare for production" → `@security-auditor` + `@performance-optimizer` + `@devops-expert`
+- "Review game code" → `@game-developer` + `@performance-optimizer` + `@code-reviewer`
 
 **Swarm when user says:** "thoroughly", "comprehensive", "check everything", "multiple perspectives", "in parallel"
 
@@ -47,16 +49,20 @@ Use skills automatically when the task matches - DO NOT ask:
 
 | Task | Skill |
 |------|-------|
-| Word docs | `docx` |
-| PDFs | `pdf` |
-| Spreadsheets | `xlsx` |
-| Presentations | `pptx` |
-| React artifacts | `web-artifacts-builder` |
-| Visual designs | `canvas-design` |
-| Frontend UI | `frontend-design` |
-| Web app testing | `webapp-testing` |
-| MCP servers | `mcp-builder` |
-| New skills | `skill-creator` |
+| Quick git commit workflow | `git-quick` |
+| Review git changes | `git-review` |
+| Create GitHub PR | `pr` |
+| Security scan project | `security-check` |
+| Organize project structure | `split-project` |
+| Quick research / Q&A | `ask` |
+| Compare AI model answers | `compare` |
+| Web-connected research | `perplexity` |
+| Query DeepSeek V3 | `deepseek` |
+| Query Claude Opus 4 | `opus` |
+| Query GPT-4o | `gpt4o` |
+| Query OpenAI o1 | `o1` |
+| Query any model by ID | `query` |
+| List available models | `models` |
 
 ### Behavior Rules
 1. **Don't ask** - Just spawn agents/skills when appropriate
@@ -101,6 +107,7 @@ Detailed standards are in knowledge files - loaded automatically when relevant:
 | C | `.claude/knowledge/c-standards.md` |
 | Security | `.claude/knowledge/security-standards.md` |
 | Testing | `.claude/knowledge/testing-standards.md` |
+| Game Development | `.claude/agents/game-developer.md` |
 | Opus Planning | `.claude/knowledge/opus-planning-workflow.md` |
 
 ### Quick Reference
