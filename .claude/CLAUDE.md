@@ -19,6 +19,7 @@ ALWAYS automatically spawn the appropriate agent(s) based on the task. DO NOT as
 | Documentation | `@docs-writer` |
 | React/UI work | `@frontend-expert` |
 | Node.js/API work | `@backend-expert` |
+| Full-stack features | `@fullstack-developer` |
 | DevOps/CI/CD | `@devops-expert` |
 | Accessibility | `@accessibility-expert` |
 | Data pipelines | `@data-engineer` |
@@ -30,6 +31,8 @@ ALWAYS automatically spawn the appropriate agent(s) based on the task. DO NOT as
 | Git problems | `@git-expert` |
 | Migrations/upgrades | `@migration-expert` |
 | Game development | `@game-developer` |
+| Tech debt assessment | `@tech-debt-analyzer` |
+| Production incidents | `@incident-responder` |
 | Codebase exploration | Explore agent (built-in) |
 
 ### Automatic Parallel Agents (Swarms)
@@ -37,10 +40,11 @@ Spawn multiple agents IN PARALLEL when the task benefits from multiple perspecti
 
 **Always swarm for:**
 - "Review this code/PR" → `@code-reviewer` + `@security-auditor` + `@performance-optimizer`
-- "Audit this project" → `@security-auditor` + `@accessibility-expert` + `@performance-optimizer`
+- "Audit this project" → `@security-auditor` + `@accessibility-expert` + `@tech-debt-analyzer`
 - "Check code quality" → `@code-reviewer` + `@refactorer` + `@test-writer`
 - "Prepare for production" → `@security-auditor` + `@performance-optimizer` + `@devops-expert`
 - "Review game code" → `@game-developer` + `@performance-optimizer` + `@code-reviewer`
+- "Full-stack feature" → `@fullstack-developer` + `@test-writer`
 
 **Swarm when user says:** "thoroughly", "comprehensive", "check everything", "multiple perspectives", "in parallel"
 

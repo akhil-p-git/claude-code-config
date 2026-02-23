@@ -64,13 +64,37 @@ if [ -d "$HOME/.claude/commands" ] && [ ! -L "$HOME/.claude/commands" ]; then
 fi
 create_symlink "$DOTFILES_DIR/.claude/commands" "$HOME/.claude/commands"
 
-# 4. Copy hooks configuration (need to merge with existing settings)
+# 4. Link agents directory
+echo ""
+echo "🤖 Setting up agents..."
+if [ -d "$HOME/.claude/agents" ] && [ ! -L "$HOME/.claude/agents" ]; then
+    echo -e "${YELLOW}⚠️  Backing up existing agents to ~/.claude/agents.backup${NC}"
+    mv "$HOME/.claude/agents" "$HOME/.claude/agents.backup"
+fi
+create_symlink "$DOTFILES_DIR/.claude/agents" "$HOME/.claude/agents"
+
+# 5. Link knowledge directory
+echo ""
+echo "📚 Setting up knowledge files..."
+if [ -d "$HOME/.claude/knowledge" ] && [ ! -L "$HOME/.claude/knowledge" ]; then
+    echo -e "${YELLOW}⚠️  Backing up existing knowledge to ~/.claude/knowledge.backup${NC}"
+    mv "$HOME/.claude/knowledge" "$HOME/.claude/knowledge.backup"
+fi
+create_symlink "$DOTFILES_DIR/.claude/knowledge" "$HOME/.claude/knowledge"
+
+# 6. Link templates directory
+echo ""
+echo "📄 Setting up templates..."
+if [ -d "$HOME/.claude/templates" ] && [ ! -L "$HOME/.claude/templates" ]; then
+    echo -e "${YELLOW}⚠️  Backing up existing templates to ~/.claude/templates.backup${NC}"
+    mv "$HOME/.claude/templates" "$HOME/.claude/templates.backup"
+fi
+create_symlink "$DOTFILES_DIR/.claude/templates" "$HOME/.claude/templates"
+
+# 7. Link hooks configuration
 echo ""
 echo "🪝 Setting up hooks..."
-if [ -f "$DOTFILES_DIR/.claude/hooks-config.json" ]; then
-    echo -e "${YELLOW}ℹ️  Hooks configuration available at: $DOTFILES_DIR/.claude/hooks-config.json${NC}"
-    echo -e "${YELLOW}ℹ️  You may need to manually merge hooks into ~/.claude/settings.json${NC}"
-fi
+create_symlink "$DOTFILES_DIR/.claude/hooks-config.json" "$HOME/.claude/hooks-config.json"
 
 # 5. Check for required environment variables
 echo ""

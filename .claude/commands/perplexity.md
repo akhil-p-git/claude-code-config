@@ -10,10 +10,12 @@ model: "claude-sonnet-4-5-20250929"
 
 Let me search the web and get you an answer with citations...
 
-! curl -s https://api.perplexity.ai/chat/completions \
-  -H "Authorization: Bearer $PERPLEXITY_API_KEY" \
+! curl -s https://openrouter.ai/api/v1/chat/completions \
+  -H "Authorization: Bearer $OPENROUTER_API_KEY" \
+  -H "HTTP-Referer: https://localhost" \
+  -H "X-Title: Claude Code CLI" \
   -H "Content-Type: application/json" \
   -d "{
-    \"model\": \"sonar\",
+    \"model\": \"perplexity/llama-3.1-sonar-large-128k-online\",
     \"messages\": [{\"role\": \"user\", \"content\": \"$ARGUMENTS\"}]
   }" | jq -r '.choices[0].message.content // .error.message // "Error: No response"'
