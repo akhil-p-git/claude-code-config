@@ -51,6 +51,7 @@
     "allowUnsandboxedCommands": true
   },
   "spinnerTipsEnabled": true,
+  "effortLevel": "medium",
   "mcpServers": {
     "memory": {
       "command": "npx",
@@ -217,5 +218,6 @@
       }
     }
   },
-  "verbose": false
+  "verbose": false,
+  "model": "haiku"
 }
