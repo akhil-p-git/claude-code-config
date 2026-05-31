@@ -1,3 +1,7 @@
+---
+description: "Storage layout, dev-work location, and git/sudo safety for this machine"
+---
+
 # Storage & Workspace
 
 This machine has three drives:
