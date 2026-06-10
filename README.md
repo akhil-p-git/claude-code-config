@@ -94,7 +94,7 @@ my-dotfiles/
 ├── .claude/
 │   ├── settings.json          # Global Claude Code settings
 │   ├── CLAUDE.md              # Coding standards & guidelines
-│   ├── hooks-config.json      # Security hooks configuration
+│   ├── hooks/                 # Hook scripts (wired in settings.json)
 │   ├── commands/              # Custom slash commands
 │   │   ├── git-quick.md       # Quick git workflow
 │   │   ├── git-review.md      # Review with security checks
@@ -230,7 +230,9 @@ Edit `~/my-dotfiles/.claude/settings.json` and run `./setup-claude.sh` again.
 
 ### Adding New Hooks
 
-Edit `~/my-dotfiles/.claude/hooks-config.json` then manually merge into `~/.claude/settings.json`.
+Add the hook under the `hooks` key in `~/my-dotfiles/.claude/settings.json` (put any
+script in `.claude/hooks/` and `chmod +x` it). Hooks load from `settings.json`
+directly — there is no separate file to merge.
 
 ## Syncing Across Machines
 
@@ -296,11 +298,11 @@ npx -y @modelcontextprotocol/server-git
 
 ### Hooks Not Firing
 
-Hooks are defined in `hooks-config.json` but must be merged into `settings.json`:
+Hooks live under the `hooks` key in `settings.json`. Confirm they're registered and the scripts are executable:
 
 ```bash
-# Manually merge hooks into ~/.claude/settings.json
-# Or update settings.json in this repo and re-run setup
+jq '.hooks | keys' ~/.claude/settings.json        # list configured hook events
+ls -l ~/dev/claude-code-config/.claude/hooks/      # scripts should be -rwxr-xr-x
 ```
 
 ### Commands Not Showing Up

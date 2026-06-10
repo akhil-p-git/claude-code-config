@@ -91,11 +91,6 @@ if [ -d "$HOME/.claude/templates" ] && [ ! -L "$HOME/.claude/templates" ]; then
 fi
 create_symlink "$DOTFILES_DIR/.claude/templates" "$HOME/.claude/templates"
 
-# 7. Link hooks configuration
-echo ""
-echo "🪝 Setting up hooks..."
-create_symlink "$DOTFILES_DIR/.claude/hooks-config.json" "$HOME/.claude/hooks-config.json"
-
 # 8. Install machine-local .gitignore (REAL file, not a symlink — git won't follow
 #    a symlinked .gitignore). Protects secrets if $HOME becomes a public git repo.
 echo ""
