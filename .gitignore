@@ -7,3 +7,7 @@
 # Local overrides (not shared)
 .local/
 local-*.sh
+
+# Auto-captured lessons inbox (machine-local; may contain raw prompts)
+lessons-inbox.md
+*.local.md

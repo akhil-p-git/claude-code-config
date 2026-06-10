@@ -1,4 +1,28 @@
 {
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/home/akhil/dev/claude-code-config/.claude/hooks/capture-lesson.sh",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/home/akhil/dev/claude-code-config/.claude/hooks/session-start.sh",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
+  },
   "env": {
     "EDITOR": "vim",
     "GIT_EDITOR": "vim",
@@ -43,6 +67,7 @@
       "Bash(format:*)"
     ]
   },
+  "model": "claude-opus-4-8",
   "enabledPlugins": {
     "code-simplifier@claude-plugins-official": true
   },
@@ -52,6 +77,7 @@
   },
   "spinnerTipsEnabled": true,
   "effortLevel": "medium",
+  "verbose": false,
   "mcpServers": {
     "memory": {
       "command": "npx",
@@ -217,7 +243,5 @@
         "OBSIDIAN_VAULT_PATH": "/home/akhil/Dev/Workflow/Obsidian Notes"
       }
     }
-  },
-  "verbose": false,
-  "model": "haiku"
+  }
 }
