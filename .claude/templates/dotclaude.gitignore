@@ -1,0 +1,22 @@
+# Machine-local / sensitive Claude Code state — keep OUT of any git repo.
+# ($HOME is wired to a PUBLIC remote per rules/storage.md, so protect these.)
+# Note: symlinked config (CLAUDE.md, settings.json, rules/, commands/, …) points
+# into the claude-code-config repo and is intentionally shared — not ignored here.
+# Installed to ~/.claude/.gitignore by setup-claude.sh as a REAL file
+# (git refuses to follow a symlinked .gitignore).
+
+lessons-inbox.md
+*.local.md
+settings.local.json
+.credentials.json
+history.jsonl
+mcp-needs-auth-cache.json
+sessions/
+shell-snapshots/
+session-env/
+projects/
+plans/
+cache/
+backups/
+todos/
+statsig/

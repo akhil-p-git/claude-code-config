@@ -96,6 +96,17 @@ echo ""
 echo "🪝 Setting up hooks..."
 create_symlink "$DOTFILES_DIR/.claude/hooks-config.json" "$HOME/.claude/hooks-config.json"
 
+# 8. Install machine-local .gitignore (REAL file, not a symlink — git won't follow
+#    a symlinked .gitignore). Protects secrets if $HOME becomes a public git repo.
+echo ""
+echo "🔒 Installing ~/.claude/.gitignore (protects machine-local secrets)..."
+if [ -f "$HOME/.claude/.gitignore" ] && [ ! -L "$HOME/.claude/.gitignore" ]; then
+    cp "$HOME/.claude/.gitignore" "$HOME/.claude/.gitignore.backup"
+    echo -e "${YELLOW}⚠️  Backed up existing ~/.claude/.gitignore${NC}"
+fi
+cp "$DOTFILES_DIR/.claude/templates/dotclaude.gitignore" "$HOME/.claude/.gitignore"
+echo -e "${GREEN}✓${NC} Installed ~/.claude/.gitignore"
+
 # 5. Check for required environment variables
 echo ""
 echo "🔐 Checking environment variables..."
