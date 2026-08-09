@@ -1,6 +1,6 @@
 ---
 name: new-project
-description: Scaffold a new application or website project on the WORK_SSD (/mnt/work/dev) with this user's standards — strict TypeScript, Vitest, ESLint/Prettier, a secrets-safe .gitignore, a README, and its own git repo. Use when the user asks to start, create, scaffold, bootstrap, or set up a new project, app, website, CLI, or repo.
+description: Scaffold a new application or website project on the WORK_SSD (~/work/dev) with this user's standards — strict TypeScript, Vitest, ESLint/Prettier, a secrets-safe .gitignore, a README, and its own git repo. Use when the user asks to start, create, scaffold, bootstrap, or set up a new project, app, website, CLI, or repo.
 ---
 
 # New Project Scaffold
@@ -13,7 +13,7 @@ Create a new project on the WORK_SSD following the user's conventions. Never sca
 - One-line purpose (for the README).
 
 ## 2. Location
-- Create at `/mnt/work/dev/<name>` (reachable as `~/dev/<name>` via symlink). Confirm it does not already exist.
+- Create at `~/work/dev/<name>` (on the WORK_SSD). Confirm it does not already exist.
 - Never create under `/` or directly in `$HOME`. See the storage rules.
 
 ## 3. Scaffold by stack (prefer official scaffolders, then apply standards)
