@@ -1,7 +1,7 @@
 ---
 description: "Analyze and organize project into frontend/backend structure"
 allowed-tools: ["Bash", "Read", "Write", "Glob", "Grep"]
-model: "claude-sonnet-4-5-20250929"
+model: sonnet
 ---
 
 # Project Structure Analysis

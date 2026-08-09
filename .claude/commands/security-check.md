@@ -1,7 +1,7 @@
 ---
 description: "Scan project for security issues, secrets, and validate .gitignore"
 allowed-tools: ["Bash", "Read", "Grep", "Glob"]
-model: "claude-sonnet-4-5-20250929"
+model: sonnet
 ---
 
 # Security Audit

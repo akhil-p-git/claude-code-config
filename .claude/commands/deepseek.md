@@ -1,7 +1,7 @@
 ---
 description: "Query DeepSeek V3 via OpenRouter (cost-effective, strong reasoning)"
 allowed-tools: ["Bash"]
-model: "claude-sonnet-4-5-20250929"
+model: sonnet
 ---
 
 # Querying DeepSeek V3

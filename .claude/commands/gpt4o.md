@@ -1,7 +1,7 @@
 ---
 description: "Query OpenAI GPT-4o (latest, faster)"
 allowed-tools: ["Bash"]
-model: "claude-sonnet-4-5-20250929"
+model: sonnet
 ---
 
 # Querying GPT-4o

@@ -1,7 +1,7 @@
 ---
 description: "List ALL available models: both native Claude models and external AI models"
 allowed-tools: ["Bash"]
-model: "claude-sonnet-4-5-20250929"
+model: sonnet
 ---
 
 # All Available Models

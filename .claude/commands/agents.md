@@ -1,7 +1,7 @@
 ---
 description: "List all available specialized agents"
 allowed-tools: ["Bash"]
-model: "claude-sonnet-4-5-20250929"
+model: sonnet
 ---
 
 # Available Specialized Agents

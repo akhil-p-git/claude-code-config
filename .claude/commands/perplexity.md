@@ -1,7 +1,7 @@
 ---
 description: "Query Perplexity Sonar (web-connected AI with citations)"
 allowed-tools: ["Bash"]
-model: "claude-sonnet-4-5-20250929"
+model: sonnet
 ---
 
 # Querying Perplexity Sonar

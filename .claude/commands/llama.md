@@ -1,7 +1,7 @@
 ---
 description: "Query Meta Llama 3.1 405B via OpenRouter"
 allowed-tools: ["Bash"]
-model: "claude-sonnet-4-5-20250929"
+model: sonnet
 ---
 
 # Querying Llama 3.1 405B

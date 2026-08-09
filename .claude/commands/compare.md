@@ -1,7 +1,7 @@
 ---
 description: "Ask multiple AI models and compare their responses"
 allowed-tools: ["Bash"]
-model: "claude-sonnet-4-5-20250929"
+model: sonnet
 ---
 
 # Comparing Multiple AI Models

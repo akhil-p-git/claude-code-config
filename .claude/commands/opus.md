@@ -1,7 +1,7 @@
 ---
-description: "Query Claude Opus 4 via OpenRouter (most capable)"
+description: "Query Claude Opus 4 via OpenRouter (needs OPENROUTER_API_KEY; your local model is already newer)"
 allowed-tools: ["Bash"]
-model: "claude-sonnet-4-5-20250929"
+model: sonnet
 ---
 
 # Querying Claude Opus 4

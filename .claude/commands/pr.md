@@ -1,7 +1,7 @@
 ---
 description: "Create a GitHub pull request with intelligent description"
 allowed-tools: ["Bash"]
-model: "claude-sonnet-4-5-20250929"
+model: sonnet
 ---
 
 # Create Pull Request

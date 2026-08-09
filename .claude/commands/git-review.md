@@ -1,7 +1,7 @@
 ---
 description: "Review git changes with security and quality checks"
 allowed-tools: ["Bash", "Grep", "Read"]
-model: "claude-sonnet-4-5-20250929"
+model: sonnet
 ---
 
 I'll perform a comprehensive review of your git changes:

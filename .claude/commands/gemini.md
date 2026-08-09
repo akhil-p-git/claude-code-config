@@ -1,7 +1,7 @@
 ---
 description: "Query Google Gemini Pro via OpenRouter"
 allowed-tools: ["Bash"]
-model: "claude-sonnet-4-5-20250929"
+model: sonnet
 ---
 
 # Querying Gemini Pro

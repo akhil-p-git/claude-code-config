@@ -1,7 +1,7 @@
 ---
 description: "List all available AI models across providers"
 allowed-tools: ["Bash"]
-model: "claude-sonnet-4-5-20250929"
+model: sonnet
 ---
 
 # Available AI Models

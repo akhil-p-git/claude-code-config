@@ -1,7 +1,7 @@
 ---
 description: "Query GPT-3.5 Turbo (fast and cost-effective)"
 allowed-tools: ["Bash"]
-model: "claude-sonnet-4-5-20250929"
+model: sonnet
 ---
 
 # Querying GPT-3.5 Turbo

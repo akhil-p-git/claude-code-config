@@ -1,7 +1,7 @@
 ---
 description: "Query any OpenRouter model by ID"
 allowed-tools: ["Bash"]
-model: "claude-sonnet-4-5-20250929"
+model: sonnet
 ---
 
 # Query Custom Model

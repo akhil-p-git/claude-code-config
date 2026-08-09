@@ -1,7 +1,7 @@
 ---
 description: "Quick research and question answering with project context"
 allowed-tools: ["WebSearch", "Read", "Grep", "Glob"]
-model: "claude-sonnet-4-5-20250929"
+model: sonnet
 ---
 
 I'm ready to answer your question with full project context.

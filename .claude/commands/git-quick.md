@@ -1,7 +1,7 @@
 ---
 description: "Quick git workflow: status, stage, commit, and push"
 allowed-tools: ["Bash", "Read"]
-model: "claude-sonnet-4-5-20250929"
+model: sonnet
 ---
 
 I'll help you with a quick git workflow. Let me:
