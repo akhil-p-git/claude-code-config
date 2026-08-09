@@ -2,6 +2,10 @@
 description: "Promote auto-captured lessons into CLAUDE.md / rules (human-approved); --prune to tidy"
 argument-hint: "[--prune]"
 allowed-tools: ["Read", "Edit", "Write", "Bash", "Grep", "Glob"]
+# Enforces the CLAUDE.md rule "promotion and pruning are always human-approved".
+# This command rewrites memory and pushes to git, so the model must never invoke
+# it on its own — only an explicit `/reflect` from the user may run it.
+disable-model-invocation: true
 ---
 
 # /reflect — promote lessons into the config
