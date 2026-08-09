@@ -11,3 +11,7 @@ local-*.sh
 # Auto-captured lessons inbox (machine-local; may contain raw prompts)
 lessons-inbox.md
 *.local.md
+
+# local backups made before applying settings changes
+.claude/settings.json.bak-*
+.claude/*.proposed
