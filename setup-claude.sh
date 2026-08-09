@@ -102,38 +102,39 @@ fi
 cp "$DOTFILES_DIR/.claude/templates/dotclaude.gitignore" "$HOME/.claude/.gitignore"
 echo -e "${GREEN}✓${NC} Installed ~/.claude/.gitignore"
 
-# 5. Check for required environment variables
+# 5. Check credentials
+#
+# This step used to tell you to `export ANTHROPIC_API_KEY` and `export GITHUB_TOKEN`.
+# That advice was wrong and actively harmful, and following it left literal
+# 'REPLACE_ME' values in ~/.bashrc that silently broke git auth ("Bad credentials")
+# and forced API-key mode. Neither variable should normally be set at all.
 echo ""
-echo "🔐 Checking environment variables..."
+echo "🔐 Checking credentials..."
 
-check_env_var() {
-    if [ -z "${!1}" ]; then
-        echo -e "${RED}✗${NC} $1 not set"
+warn_if_set() {
+    if [ -n "${!1}" ]; then
+        echo -e "${YELLOW}⚠️  $1 is set — $2${NC}"
+        echo -e "${YELLOW}   Unset it unless you specifically need it.${NC}"
         return 1
-    else
-        echo -e "${GREEN}✓${NC} $1 is set"
-        return 0
     fi
+    return 0
 }
 
-ENV_MISSING=0
+warn_if_set "ANTHROPIC_API_KEY" \
+    "this overrides your claude.ai subscription login and disables connectors + Remote Control"
+warn_if_set "GITHUB_TOKEN" \
+    "this overrides the gh keyring token; a stale value breaks every git push"
 
-if ! check_env_var "ANTHROPIC_API_KEY"; then
-    ENV_MISSING=1
+if command -v gh >/dev/null 2>&1 && gh auth status >/dev/null 2>&1; then
+    echo -e "${GREEN}✓${NC} gh is authenticated (git will use the keyring token)"
+else
+    echo -e "${YELLOW}⚠️  gh not authenticated — run: gh auth login${NC}"
 fi
 
-if ! check_env_var "GITHUB_TOKEN"; then
-    ENV_MISSING=1
-    echo -e "${YELLOW}  Create one at: https://github.com/settings/tokens${NC}"
-fi
-
-if [ $ENV_MISSING -eq 1 ]; then
-    echo ""
-    echo -e "${YELLOW}⚠️  Add missing environment variables to your shell config (~/.zshrc or ~/.bashrc):${NC}"
-    echo ""
-    echo "export ANTHROPIC_API_KEY='your-api-key'"
-    echo "export GITHUB_TOKEN='your-github-token'"
-    echo ""
+if [ -f "$HOME/.secrets.env" ]; then
+    echo -e "${GREEN}✓${NC} ~/.secrets.env present (optional API keys for /gpt4, /perplexity, ...)"
+else
+    echo -e "${YELLOW}ℹ${NC}  No ~/.secrets.env — only needed for the external-model commands (see .env.example)"
 fi
 
 # 6. Install/verify Claude Code
