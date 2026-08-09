@@ -1,51 +1,12 @@
 {
-  "hooks": {
-    "PreToolUse": [
-      {
-        "matcher": "Bash",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "/home/akhil/dev/claude-code-config/.claude/hooks/guard-git-secrets.sh",
-            "timeout": 10
-          }
-        ]
-      }
-    ],
-    "UserPromptSubmit": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "/home/akhil/dev/claude-code-config/.claude/hooks/capture-lesson.sh",
-            "timeout": 10
-          }
-        ]
-      }
-    ],
-    "SessionStart": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "/home/akhil/dev/claude-code-config/.claude/hooks/session-start.sh",
-            "timeout": 10
-          }
-        ]
-      }
-    ]
-  },
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+
   "env": {
     "EDITOR": "vim",
     "GIT_EDITOR": "vim",
-    "ANTHROPIC_API_KEY": "$ANTHROPIC_API_KEY",
-    "OPENAI_API_KEY": "$OPENAI_API_KEY",
-    "OPENROUTER_API_KEY": "$OPENROUTER_API_KEY",
-    "GITHUB_TOKEN": "$GITHUB_TOKEN",
-    "RENDER_API_KEY": "$RENDER_API_KEY",
-    "PERPLEXITY_API_KEY": "$PERPLEXITY_API_KEY",
     "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1"
   },
+
   "permissions": {
     "allow": [
       "Read(*)",
@@ -72,188 +33,138 @@
       "Bash(wget:*)"
     ],
     "deny": [
-      "Bash(rm:-rf /)",
-      "Bash(rm:-rf ~)",
-      "Bash(dd:*)",
+      "Read(**/.env)",
+      "Read(**/.env.local)",
+      "Read(**/.env.*.local)",
+      "Read(**/.env.production)",
+      "Read(**/.env.prod)",
+      "Read(**/*.pem)",
+      "Read(**/*.key)",
+      "Read(**/*.p12)",
+      "Read(**/*.pfx)",
+      "Read(**/*.keystore)",
+      "Read(**/id_rsa*)",
+      "Read(**/id_ed25519*)",
+      "Read(**/id_dsa*)",
+      "Read(**/secrets/**)",
+      "Read(~/.secrets.env)",
+      "Read(~/.ssh/**)",
+      "Read(~/.gnupg/**)",
+      "Read(~/.aws/**)",
+      "Read(~/.config/gh/**)",
+      "Read(~/.claude/.credentials.json)",
+      "Edit(~/.ssh/**)",
+      "Edit(~/.gnupg/**)",
+      "Edit(~/.aws/**)",
+      "Write(~/.ssh/**)",
+      "Write(~/.gnupg/**)",
+      "Write(~/.aws/**)",
       "Bash(mkfs:*)",
-      "Bash(format:*)"
+      "Bash(shred:*)"
     ]
   },
-  "model": "claude-opus-4-8",
-  "enabledPlugins": {
-    "code-simplifier@claude-plugins-official": true
+
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/home/akhil/dev/claude-code-config/.claude/hooks/guard-git-secrets.sh",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/home/akhil/dev/claude-code-config/.claude/hooks/note-verification.sh",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/home/akhil/dev/claude-code-config/.claude/hooks/capture-lesson.sh",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/home/akhil/dev/claude-code-config/.claude/hooks/session-start.sh",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/home/akhil/dev/claude-code-config/.claude/hooks/verify-gate.sh",
+            "timeout": 15
+          }
+        ]
+      }
+    ],
+    "PreCompact": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/home/akhil/dev/claude-code-config/.claude/hooks/precompact-preserve.sh",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "Notification": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/home/akhil/dev/claude-code-config/.claude/hooks/notify.sh",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
   },
+
+  "statusLine": {
+    "type": "command",
+    "command": "/home/akhil/dev/claude-code-config/.claude/statusline.sh",
+    "padding": 1
+  },
+
+  "enabledPlugins": {
+    "code-simplifier@claude-plugins-official": true,
+    "vercel@claude-plugins-official": true
+  },
+
   "sandbox": {
     "enabled": false,
     "allowUnsandboxedCommands": true
   },
+
   "spinnerTipsEnabled": true,
-  "effortLevel": "medium",
-  "verbose": false,
-  "mcpServers": {
-    "memory": {
-      "command": "npx",
-      "args": [
-        "-y",
-        "@modelcontextprotocol/server-memory"
-      ]
-    },
-    "filesystem": {
-      "command": "npx",
-      "args": [
-        "-y",
-        "@modelcontextprotocol/server-filesystem",
-        "/home/akhil"
-      ]
-    },
-    "taskmaster": {
-      "command": "npx",
-      "args": [
-        "-y",
-        "task-master-ai"
-      ],
-      "env": {
-        "ANTHROPIC_API_KEY": "$ANTHROPIC_API_KEY"
-      }
-    },
-    "git": {
-      "command": "npx",
-      "args": [
-        "-y",
-        "@modelcontextprotocol/server-git"
-      ]
-    },
-    "github": {
-      "command": "npx",
-      "args": [
-        "-y",
-        "@modelcontextprotocol/server-github"
-      ],
-      "env": {
-        "GITHUB_PERSONAL_ACCESS_TOKEN": "$GITHUB_TOKEN"
-      }
-    },
-    "render": {
-      "type": "http",
-      "url": "https://mcp.render.com/mcp",
-      "headers": {
-        "Authorization": "Bearer $RENDER_API_KEY"
-      }
-    },
-    "n8n-mcp": {
-      "command": "npx",
-      "args": [
-        "n8n-mcp"
-      ],
-      "env": {
-        "MCP_MODE": "stdio",
-        "LOG_LEVEL": "error",
-        "DISABLE_CONSOLE_OUTPUT": "true",
-        "N8N_API_URL": "http://localhost:5678",
-        "N8N_API_KEY": "$N8N_API_KEY"
-      }
-    },
-    "fetch": {
-      "command": "npx",
-      "args": [
-        "-y",
-        "@modelcontextprotocol/server-fetch"
-      ]
-    },
-    "postgres": {
-      "command": "npx",
-      "args": [
-        "-y",
-        "@modelcontextprotocol/server-postgres",
-        "$POSTGRES_CONNECTION_STRING"
-      ]
-    },
-    "sqlite": {
-      "command": "npx",
-      "args": [
-        "-y",
-        "@modelcontextprotocol/server-sqlite",
-        "--db-path",
-        "/home/akhil/.claude/claude.db"
-      ]
-    },
-    "playwright": {
-      "command": "npx",
-      "args": [
-        "-y",
-        "@executeautomation/playwright-mcp-server"
-      ]
-    },
-    "aws-kb-retrieval": {
-      "command": "npx",
-      "args": [
-        "-y",
-        "@modelcontextprotocol/server-aws-kb-retrieval"
-      ],
-      "env": {
-        "AWS_ACCESS_KEY_ID": "$AWS_ACCESS_KEY_ID",
-        "AWS_SECRET_ACCESS_KEY": "$AWS_SECRET_ACCESS_KEY",
-        "AWS_REGION": "$AWS_REGION"
-      }
-    },
-    "docker": {
-      "command": "npx",
-      "args": [
-        "-y",
-        "@modelcontextprotocol/server-docker"
-      ]
-    },
-    "time": {
-      "command": "npx",
-      "args": [
-        "-y",
-        "@modelcontextprotocol/server-time"
-      ]
-    },
-    "context7": {
-      "command": "npx",
-      "args": [
-        "-y",
-        "@upstash/context7-mcp"
-      ]
-    },
-    "google-drive": {
-      "command": "npx",
-      "args": [
-        "-y",
-        "@modelcontextprotocol/server-gdrive"
-      ],
-      "env": {
-        "GOOGLE_CLIENT_ID": "$GOOGLE_CLIENT_ID",
-        "GOOGLE_CLIENT_SECRET": "$GOOGLE_CLIENT_SECRET"
-      }
-    },
-    "perplexity": {
-      "command": "npx",
-      "args": [
-        "-y",
-        "perplexity-mcp"
-      ],
-      "env": {
-        "PERPLEXITY_API_KEY": "$PERPLEXITY_API_KEY"
-      }
-    },
-    "youtube-transcript": {
-      "command": "npx",
-      "args": [
-        "-y",
-        "@kimtaeyoon83/mcp-server-youtube-transcript"
-      ]
-    },
-    "obsidian": {
-      "command": "npx",
-      "args": [
-        "-y",
-        "mcp-obsidian"
-      ],
-      "env": {
-        "OBSIDIAN_VAULT_PATH": "/home/akhil/Dev/Workflow/Obsidian Notes"
-      }
-    }
-  }
+  "effortLevel": "xhigh",
+  "tui": "fullscreen",
+  "skipWorkflowUsageWarning": true,
+  "verbose": false
 }
