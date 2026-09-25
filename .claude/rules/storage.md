@@ -36,9 +36,7 @@ they are ordinary directories on `/home`. Any path starting `/mnt/work` is stale
 - Before ANY `git add` / `commit` / `push`, run `git rev-parse --show-toplevel` to confirm
   which repo you are in. A `PreToolUse` hook (`guard-git-secrets.sh`) blocks staging of
   secret-shaped paths, but it is a backstop, not a substitute for looking.
-- **Two copies of `claude-code-config` exist**: `~/dev/claude-code-config` is the live one
-  (`~/.claude/*` symlinks point at it); `~/work/Dev/claude-code-config` is a stale checkout.
-  Always edit the `~/dev` one.
+- The live `claude-code-config` is `~/dev/claude-code-config` (`~/.claude/*` symlinks point at it).
 
 ## sudo Handoff
 - sudo credentials cached via the `!` prompt do NOT carry into Claude's Bash tool (the
