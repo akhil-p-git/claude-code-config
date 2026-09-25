@@ -17,8 +17,8 @@ Verified 2026-08-09. Re-check with `lsblk` / `df -h` before trusting these numbe
 they are ordinary directories on `/home`. Any path starting `/mnt/work` is stale.
 
 ## Dev Work Location
-- Do dev work on the WORK_SSD: create new projects under `~/work/dev/`.
-- Existing projects live there (`~/work/dev/localAI`, `Personal-Portfolio`, …).
+- Do dev work on the WORK_SSD: create new projects under `~/work/Dev/`.
+- Existing projects live there (`~/work/Dev/localAI`, `Personal-Portfolio`, …).
 - Never create projects or scratch work on the root drive `/`.
 
 ## Keep Root Lean
@@ -37,7 +37,7 @@ they are ordinary directories on `/home`. Any path starting `/mnt/work` is stale
   which repo you are in. A `PreToolUse` hook (`guard-git-secrets.sh`) blocks staging of
   secret-shaped paths, but it is a backstop, not a substitute for looking.
 - **Two copies of `claude-code-config` exist**: `~/dev/claude-code-config` is the live one
-  (`~/.claude/*` symlinks point at it); `~/work/dev/claude-code-config` is a stale checkout.
+  (`~/.claude/*` symlinks point at it); `~/work/Dev/claude-code-config` is a stale checkout.
   Always edit the `~/dev` one.
 
 ## sudo Handoff
