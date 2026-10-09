@@ -22,12 +22,15 @@ Create a new project on the WORK_SSD following the user's conventions. Never sca
 - **ts-node**: `npm init -y`; add TypeScript + tsx/tsup; set `"type": "module"`.
 - **python**: `uv init <name>` (or venv + pyproject); add ruff + pytest.
 
+For a full-stack app with separate frontend and backend, use the user's layout: `frontend/` (or `client/`), `backend/` (or `server/`), and `shared/` for types and utilities used by both.
+
 ## 4. Apply standards (all stacks)
 - TypeScript: `"strict": true` in tsconfig. Python: type hints + ruff + mypy.
 - Testing: add Vitest (JS/TS) or pytest (Python) with one example test.
 - Lint/format: ESLint + Prettier (JS/TS) or ruff (Python).
 - `.gitignore` must exclude `.env`, `.env.*` (keep `!.env.example`), `*.key`, `*.pem`, `secrets/`, `node_modules/`, `dist/`, `.venv/`, and build/cache dirs.
 - Add `.env.example` (never a real `.env`). Add `README.md` with purpose, setup, run, and test commands.
+- Add a short project `CLAUDE.md` (under ~30 lines): the exact install, dev, build, lint, typecheck, and single-test commands with their quiet flags, plus any non-obvious gotcha. Commands Claude doesn't have to infer are the highest-value lines a project file can hold; don't restate general conventions.
 
 ## 5. Initialize git
 - `git init` so the project gets its OWN repo — do NOT rely on the $HOME repo (confirm `git rev-parse --show-toplevel` points at the new project).

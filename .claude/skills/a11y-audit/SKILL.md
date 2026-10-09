@@ -8,13 +8,13 @@ description: Run an accessibility audit (axe-core via Playwright) against a runn
 Audit a running local web app. Automated scanning catches only ~30–40% of issues, so the manual pass is required, not optional.
 
 ## 1. Get a URL
-- A dev server must be running. If none is, start the app first (or use the `webapp-testing` skill) and get the URL, e.g. `http://localhost:3000/`.
+- A dev server must be running. If none is, start the app first and get the URL, e.g. `http://localhost:3000/`.
 
 ## 2. Automated axe-core scan
 ```bash
 node ~/.claude/skills/a11y-audit/scripts/a11y_audit.mjs <url>
 ```
-- Requires Playwright (chromium). If missing: `npm i -D playwright && npx playwright install chromium`, or run inside the `webapp-testing` skill's environment.
+- Run it from the project root: it resolves the project's own Playwright (chromium). If the project has none, ask before adding it (`npm i -D playwright && npx playwright install chromium`).
 - It injects axe-core (from CDN, no install) and prints violations grouped by impact (critical/serious/moderate/minor) with the rule id, affected selectors, and a help URL. A clean scan is a floor, not a pass.
 
 ## 3. Manual checks (axe cannot catch these)

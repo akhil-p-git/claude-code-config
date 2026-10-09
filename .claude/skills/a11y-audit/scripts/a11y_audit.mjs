@@ -3,19 +3,27 @@
 // WCAG 2.0/2.1/2.2 A+AA checks, and report violations grouped by impact.
 // Usage: node a11y_audit.mjs <url>
 import process from 'node:process';
+import path from 'node:path';
+import { createRequire } from 'node:module';
 
 const url = process.argv[2];
 if (!url) {
-  console.error('Usage: node a11y_audit.mjs <url>   (the app must be running)');
+  console.error('Usage: node a11y_audit.mjs <url>   (run from the project root; the app must be running)');
   process.exit(2);
 }
 
+// A bare import('playwright') resolves from THIS script's folder, which never has it.
+// Resolve from the project being audited (the cwd) first, then fall back to normal resolution.
 let chromium;
 try {
-  ({ chromium } = await import('playwright'));
+  ({ chromium } = createRequire(path.resolve(process.cwd(), 'package.json'))('playwright'));
 } catch {
-  console.error('Playwright not found. Install: npm i -D playwright && npx playwright install chromium');
-  process.exit(3);
+  try {
+    ({ chromium } = await import('playwright'));
+  } catch {
+    console.error('Playwright not found in this project. From the project root: npm i -D playwright && npx playwright install chromium');
+    process.exit(3);
+  }
 }
 
 const browser = await chromium.launch();
