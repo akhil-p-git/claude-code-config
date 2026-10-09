@@ -22,6 +22,10 @@ paths:
 - Render `<title>`/`<meta>`/`<link>` inline in components — React 19 hoists them to `<head>`; no react-helmet.
 - Do NOT add manual `useMemo`/`useCallback`/`React.memo` when the React Compiler is enabled — let it memoize. Keep them only for referential stability third-party APIs require.
 
+## Next.js 16 Changes Models Often Miss
+- `middleware.ts` is now `proxy.ts`; `params`, `searchParams`, `cookies()`, and `headers()` are async-only — always `await` them.
+- Turbopack is the default bundler for dev and build; `next lint` is gone — run ESLint directly. Check the installed version's docs (or the vercel plugin's Next.js skills) before relying on memory.
+
 ## Next.js Caching & Rendering (15/16)
 - Assume `fetch` and GET Route Handlers are uncached by default; opt in explicitly with `'use cache'` on functions/components/pages.
 - Tune cached entries with `cacheLife` profiles and `cacheTag`; invalidate via `revalidateTag`, and use `updateTag` inside Server Actions for read-your-writes.

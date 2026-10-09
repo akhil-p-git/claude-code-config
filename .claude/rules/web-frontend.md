@@ -24,8 +24,8 @@ paths:
 - Define tokens as custom properties under `:root`; reference with `var()`. Scope component tokens locally.
 - Use `oklch()`/`oklab()` for perceptually uniform colors; generate variants with relative color syntax: `oklch(from var(--brand) calc(l - 0.1) c h)`.
 - Use `color-mix(in oklch, var(--brand) 80%, white)` for tints/shades instead of hardcoding hex.
-- Use `light-dark(#fff, #111)` plus `color-scheme: light dark` for theming; honor `prefers-color-scheme` and never hardcode dark values.
-- Fluid type/space with `clamp(min, preferred-vw, max)`; avoid fixed px breakpoint jumps.
+- Theme with semantic tokens and `light-dark(var(--surface-light), var(--surface-dark))` plus `color-scheme: light dark`; honor `prefers-color-scheme` and never hardcode raw hex in components.
+- Make the design's type-scale and spacing steps fluid with `clamp(min, preferred-vw, max)`; never introduce one-off sizes between steps or fixed px breakpoint jumps.
 
 ## Motion & UX
 - Use the View Transitions API for state/page transitions; assign `view-transition-name` and style `::view-transition-*`. Provide a progressive-enhancement helper.

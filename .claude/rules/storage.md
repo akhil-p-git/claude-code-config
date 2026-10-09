@@ -1,45 +1,23 @@
 ---
-description: "Storage layout, dev-work location, and git/sudo safety for this machine"
+description: "This machine: disk layout, where work goes, toolchains, git auth, sudo"
 ---
 
-# Storage & Workspace
+# This Machine (Arch Linux)
 
-Verified 2026-08-09. Re-check with `lsblk` / `df -h` before trusting these numbers.
+Verified 2026-10-08 — re-check with `df -h / /home ~/work` before trusting the numbers.
 
-| Path | Device | Size | Use |
-| --- | --- | --- | --- |
-| `/` | nvme1n1p2 | 50 GB | OS only — **keep lean** |
-| `/home` | nvme1n1p3 | 1.8 TB | home, games, media |
-| `~/work` | nvme0n1 (label `WORK_SSD`) | 931 GB | **all dev work** |
+| Path | Size | Use |
+| --- | --- | --- |
+| `/` | 49 GB, 78% used | OS only — keep lean |
+| `/home` | 1.8 TB | home, media, user-space toolchains |
+| `~/work` (WORK_SSD) | 916 GB | dev work: new projects go in `~/work/Dev/<name>` |
 
-`~/work` is mounted from `/etc/fstab` (`nofail`). **The WORK_SSD moved: it used to be
-`/mnt/work`, which no longer exists.** `~/dev` and `~/Dev` are no longer symlinks into it —
-they are ordinary directories on `/home`. Any path starting `/mnt/work` is stale.
+- `/mnt/work` no longer exists; any path starting with it is stale. `~/dev` is a plain directory on `/home` (this config repo and study repos).
+- `/` fills up from Docker (`/var/lib/docker` is on `/`; the old `~/work/docker-data` is unused) and pacman packages. The pacman cache is already on `~/work`. Run `df -h /` before installs, image pulls, or large builds; never put caches, models, datasets, or VM/container images on `/`.
+- Toolchains: Node via fnm (`--use-on-cd`; global npm packages are per Node version); Java = pacman JDK 21 (`archlinux-java`); .NET 10 SDK in `~/.dotnet`; Python via `uv` (system Python is externally managed). `/opt/cuda` is in use — never remove it.
+- After a `pacman -Syu` that upgrades `linux`, Docker networking breaks (veth) until reboot: compare `uname -r` with `ls /usr/lib/modules` and ask me to reboot.
+- sudo from the Bash tool doesn't work (credentials are tty-scoped): give me the exact command to run with `!`.
 
-## Dev Work Location
-- Do dev work on the WORK_SSD: create new projects under `~/work/Dev/`.
-- Existing projects live there (`~/work/Dev/localAI`, `Personal-Portfolio`, …).
-- Never create projects or scratch work on the root drive `/`.
-
-## Keep Root Lean
-- `/` is 50 GB and was **95% full (2.4 GB free) on 2026-08-09** — check `df -h /` before
-  any install, image pull, or large build, and clear space rather than filling it.
-- Never let caches, model files, datasets, build artifacts, or container/VM images land on `/`.
-  Point tool data/cache dirs (Docker, pacman, Ollama, npm/pnpm, pip, cargo) at `~/work`
-  (`~/work/docker-data` and `~/work/pacman-cache` already exist).
-- Large media and games belong on `/home`.
-
-## Git Safety
-- `$HOME` is **not** a git repo (it was one previously; the remote and repo are gone).
-  If one is ever re-initialized there, never run `git add -A` from `$HOME` — it would stage
-  `.ssh`, `.env`, `.gnupg`, and shell history.
-- Before ANY `git add` / `commit` / `push`, run `git rev-parse --show-toplevel` to confirm
-  which repo you are in. A `PreToolUse` hook (`guard-git-secrets.sh`) blocks staging of
-  secret-shaped paths, but it is a backstop, not a substitute for looking.
-- The live `claude-code-config` is `~/dev/claude-code-config` (`~/.claude/*` symlinks point at it).
-
-## sudo Handoff
-- sudo credentials cached via the `!` prompt do NOT carry into Claude's Bash tool (the
-  timestamp is tty-scoped).
-- For commands that need sudo, hand them to the user to run via `!` rather than invoking
-  sudo directly.
+## Git
+- Auth comes from the `gh` keyring through the credential helper. Never export `GITHUB_TOKEN` or `ANTHROPIC_API_KEY`: they override the keyring and the claude.ai login, silently breaking pushes and connectors. Third-party API keys live in `~/.secrets.env` (scripts source it; never read or print it).
+- `$HOME` is not a git repo. Before any `git add`/`commit`/`push`, confirm where you are with `git rev-parse --show-toplevel`; never `git add -A` from `$HOME`. The `guard-git-secrets.sh` hook blocks staging secret-shaped files, but it is a backstop, not a substitute for looking.
