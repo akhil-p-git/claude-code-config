@@ -2,6 +2,7 @@
 description: "Quick research and question answering with project context"
 allowed-tools: ["WebSearch", "Read", "Grep", "Glob"]
 model: sonnet
+disable-model-invocation: true
 ---
 
 I'm ready to answer your question with full project context.
