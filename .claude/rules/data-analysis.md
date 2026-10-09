@@ -33,4 +33,5 @@ paths:
 - Restart-and-run-all before sharing or committing a notebook. Keep parameters at the top, set seeds, and strip
   outputs from git (`nbstripout`) or use marimo `.py` notebooks.
 - Record the data snapshot, query text, package versions (`uv.lock`), and run date alongside results.
-- Charts: label units and source, start bar charts at zero, and don't put unrelated series on dual axes.
+- Charts: label units and source, start bar charts at zero, and don't put unrelated series on dual axes. Use the
+  `dataviz` skill for anything you'll share.

@@ -3,7 +3,6 @@
   "env": {
     "EDITOR": "vim",
     "GIT_EDITOR": "vim",
-    "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1",
     "VERCEL_PLUGIN_TELEMETRY": "off",
     "ENABLE_STOP_REVIEW": "0"
   },
@@ -296,5 +295,8 @@
   },
   "tui": "fullscreen",
   "skipWorkflowUsageWarning": true,
-  "verbose": false
+  "verbose": false,
+  "autoMode": {
+    "classifyAllShell": true
+  }
 }

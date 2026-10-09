@@ -49,7 +49,7 @@ Choose light or dark from where and when the product is used, not from its categ
 - One accent per view. Secondary text on a colored surface is tinted from that surface's hue, never plain gray.
 - Contrast: body text 4.5:1, large text and UI parts 3:1, checked in both themes. Hover, active, and focus raise contrast; they never lower it.
 - Where a state has no designed color, overlay the on-color at 8% for hover, 10% for focus and pressed, 16% for dragged; disabled content sits at 38% opacity (Material 3 state layers).
-- Charts get a color-blind-safe palette and never rely on color alone.
+- Charts get a color-blind-safe palette and never rely on color alone; use the `dataviz` skill.
 
 ## 6. Every component, every state
 

@@ -67,4 +67,4 @@ pre-specified. Raw data is read-only: write derived files elsewhere.
 - [ ] Scanned scope stated; no conclusion drawn from a biased prefix.
 - [ ] No raw data modified; no imputation or deletion performed.
 - [ ] Every finding has a number, a denominator, and its uncertainty or caveat.
-- [ ] Charts saved and opened to confirm they show what the text claims.
+- [ ] Charts saved and opened to confirm they show what the text claims (`dataviz` skill for shared charts).
