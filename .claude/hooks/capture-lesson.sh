@@ -21,14 +21,22 @@ first="$(printf '%s\n' "$prompt" | grep -vE '^[[:space:]]*$' | head -1)"
 [ -z "$first" ] && exit 0
 
 # Skip pasted material: shell prompts, diffs, code fences, logs, slash commands.
-printf '%s' "$first" | grep -qE '^[[:space:]]*(```|\$ |# |//|/[a-z]|[-+]{3} |@@ |\[[0-9]{4}-|[A-Za-z]+@[A-Za-z]+|\[[a-z]+@)' && exit 0
+# Also skip harness-injected turns (UserPromptSubmit fires for background-agent reports,
+# teammate/cross-session messages and pastes, which arrive wrapped in <tags>).
+printf '%s' "$first" | grep -qE '^[[:space:]]*(<|```|\$ |# |//|/[a-z]|[-+]{3} |@@ |\[[0-9]{4}-|[A-Za-z]+@[A-Za-z]+|\[[a-z]+@)' && exit 0
 
 lc="$(printf '%s' "$first" | tr '[:upper:]' '[:lower:]')"
 
 # Correction / feedback signals. Kept fairly precise to limit false positives.
-pattern="^(no\b|nope|nah|don'?t|do not|stop|actually|wrong|that'?s not|that is not|that'?s wrong|incorrect|not what|i said|i asked|why did you|you (should|were|did ?n'?t|keep|always|never)|use .* not |don'?t use|instead of|next time|from now on|please stop|that broke|you broke|undo|revert)"
-
-printf '%s' "$lc" | grep -qE "$pattern" || exit 0
+# Strong openers are corrections on their own. Weak openers ("stop", "actually", "no ...")
+# also start ordinary instructions ("Stop the dev server", "Actually, also add X"), so they
+# count only with a correction cue on the same line.
+strong="^(no[,.!]|nope[,.!]|don'?t|do not|wrong|that'?s not|that is not|that'?s wrong|incorrect|not what|i said|i asked|why did you|you (should|were|did ?n'?t|keep|always|never)|use .* not |don'?t use|instead of|next time|from now on|please stop|that broke|you broke)"
+weak="^(no\b|nope|nah|stop|actually|undo|revert)"
+cue="\b(not|n'?t|never|instead|wrong|should|again|always|said|asked|broke|mistake|told you)\b"
+if ! printf '%s' "$lc" | grep -qE "$strong"; then
+  printf '%s' "$lc" | grep -qE "$weak" && printf '%s' "$lc" | grep -qE "$cue" || exit 0
+fi
 
 if [ ! -f "$INBOX" ]; then
   printf '# Lessons Inbox\n\nRaw, auto-captured corrections. Run `/reflect` to cluster, generalize, and promote\nthe durable ones into CLAUDE.md / rules, then clear this file. Machine-local; gitignored.\n\n' > "$INBOX"

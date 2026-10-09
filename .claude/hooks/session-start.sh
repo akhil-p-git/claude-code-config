@@ -22,6 +22,12 @@ if [ -f "$INBOX" ]; then
   fi
 fi
 
+# Codex's "import from Claude" rewrites every "claude" to "Codex"; its copy once sat at ~/AGENTS.md, which
+# Claude Code loads as project instructions for any session under $HOME whose project has no CLAUDE.md.
+if [ -f "$HOME/AGENTS.md" ]; then
+  echo "⚠️  ~/AGENTS.md exists and is loaded as project instructions under ~. If it is a Codex import (says \"Codex.ai\", ~/.Codex), delete it."
+fi
+
 if [ -d "$CONFIG_REPO/.git" ]; then
   dirty="$(git -C "$CONFIG_REPO" status --porcelain 2>/dev/null | head -12)"
   if [ -n "$dirty" ]; then

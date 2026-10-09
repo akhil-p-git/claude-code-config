@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # PreToolUse(Bash) guard — blocks committing secrets into git.
-# Inspects ONLY the `git add`/`git stage` invocation(s): the command is split on
+# Inspects ONLY the `git add`/`git stage` invocation(s), including `git -C <dir>` / `git -c k=v`
+# forms: the command is split on
 # && || ; | and newlines, and a segment counts only if it *starts* with `git … add`
 # (after leading ENV=val assignments). So commit messages and other chained
 # commands are never matched.
@@ -23,8 +24,9 @@ while IFS= read -r seg; do
   while printf '%s' "$seg" | grep -qE '^[A-Za-z_][A-Za-z0-9_]*=[^[:space:]]*[[:space:]]+'; do
     seg="$(printf '%s' "$seg" | sed -E 's/^[A-Za-z_][A-Za-z0-9_]*=[^[:space:]]*[[:space:]]+//')"
   done
-  printf '%s' "$seg" | grep -qE '^git[[:space:]]+(-[^[:space:]]+[[:space:]]+)*(add|stage)\b' || continue
-  args="$(printf '%s' "$seg" | sed -E 's/^git[[:space:]]+(-[^[:space:]]+[[:space:]]+)*(add|stage)\b//')"
+  printf '%s' "$seg" | grep -qE '^git[[:space:]]+(-[Cc][[:space:]]+[^[:space:]]+[[:space:]]+|-[^[:space:]]+[[:space:]]+)*(add|stage)\b' || continue
+  args="$(printf '%s' "$seg" | sed -E 's/^git[[:space:]]+(-[Cc][[:space:]]+[^[:space:]]+[[:space:]]+|-[^[:space:]]+[[:space:]]+)*(add|stage)\b//')"
+  gdir="$(printf '%s' "$seg" | sed -nE 's/^git[[:space:]]+(.*[[:space:]])?-C[[:space:]]+([^[:space:]]+)[[:space:]].*/\2/p')"
   scrub="$(printf '%s' "$args" | sed -E 's#[^[:space:]]*\.env\.(example|sample|template|dist)\b##g')"
 
   if    printf '%s' "$scrub" | grep -qiE '(^|[[:space:]])[^[:space:]]*\.env(\.[[:alnum:]_-]+)*([[:space:]]|$)' \
@@ -35,7 +37,8 @@ while IFS= read -r seg; do
     block=1; reason="a secret/credential/.taskmaster path"; break
   fi
   if printf '%s' "$args" | grep -qE '(^|[[:space:]])(-A|--all|\.|\*)([[:space:]]|$)'; then
-    top="$(git -C "${cwd:-$PWD}" rev-parse --show-toplevel 2>/dev/null || echo "")"
+    dir="${cwd:-$PWD}"; [ -n "$gdir" ] && { gdir="${gdir/#\~/$HOME}"; case "$gdir" in /*) dir="$gdir" ;; *) dir="$dir/$gdir" ;; esac; }
+    top="$(git -C "$dir" rev-parse --show-toplevel 2>/dev/null || echo "")"
     if [ -n "$top" ] && [ "$top" = "$HOME" ]; then
       block=1; reason="blanket 'git add -A/./*' from \$HOME (a PUBLIC repo)"; break
     fi
