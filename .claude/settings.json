@@ -28,39 +28,6 @@
       "Bash(curl:*)",
       "Bash(wget:*)"
     ],
-    "ask": [
-      "Bash(gh skill install *)",
-      "Bash(gh skill update *)",
-      "Bash(npx skills *)",
-      "Bash(claude plugin install *)",
-      "Bash(claude plugin marketplace add *)",
-      "mcp__plugin_vercel_vercel__request_*",
-      "mcp__plugin_vercel_vercel__create_deployment",
-      "mcp__plugin_vercel_vercel__cancel_deployment",
-      "mcp__plugin_vercel_vercel__start_rolling_release",
-      "mcp__plugin_vercel_vercel__complete_rolling_release",
-      "mcp__plugin_vercel_vercel__approve_rolling_release_stage",
-      "mcp__plugin_vercel_vercel__update_*",
-      "mcp__plugin_vercel_vercel__edit_*",
-      "mcp__plugin_vercel_vercel__patch_*",
-      "mcp__plugin_vercel_vercel__put_*",
-      "mcp__plugin_vercel_vercel__add_*",
-      "mcp__plugin_vercel_vercel__replace_*",
-      "mcp__plugin_vercel_vercel__restore_*",
-      "mcp__plugin_vercel_vercel__stage_*",
-      "mcp__plugin_vercel_vercel__assign_alias",
-      "mcp__plugin_vercel_vercel__create_project_env",
-      "mcp__plugin_vercel_vercel__create_record",
-      "mcp__plugin_vercel_vercel__create_flag",
-      "mcp__plugin_vercel_vercel__create_drain",
-      "mcp__plugin_vercel_vercel__pause_project",
-      "mcp__plugin_vercel_vercel__unpause_project",
-      "mcp__plugin_vercel_vercel__buy_*",
-      "mcp__plugin_vercel_vercel__create_or_transfer_domain",
-      "mcp__plugin_vercel_vercel__invalidate_*",
-      "mcp__plugin_vercel_vercel__revoke_*",
-      "mcp__plugin_vercel_vercel__accept_project_transfer_request"
-    ],
     "deny": [
       "Read(//**/.env)",
       "Read(//**/.env.local)",
@@ -101,6 +68,39 @@
       "Edit(~/.aws/**)",
       "Bash(mkfs:*)",
       "Bash(shred:*)"
+    ],
+    "ask": [
+      "Bash(gh skill install *)",
+      "Bash(gh skill update *)",
+      "Bash(npx skills *)",
+      "Bash(claude plugin install *)",
+      "Bash(claude plugin marketplace add *)",
+      "mcp__plugin_vercel_vercel__request_*",
+      "mcp__plugin_vercel_vercel__create_deployment",
+      "mcp__plugin_vercel_vercel__cancel_deployment",
+      "mcp__plugin_vercel_vercel__start_rolling_release",
+      "mcp__plugin_vercel_vercel__complete_rolling_release",
+      "mcp__plugin_vercel_vercel__approve_rolling_release_stage",
+      "mcp__plugin_vercel_vercel__update_*",
+      "mcp__plugin_vercel_vercel__edit_*",
+      "mcp__plugin_vercel_vercel__patch_*",
+      "mcp__plugin_vercel_vercel__put_*",
+      "mcp__plugin_vercel_vercel__add_*",
+      "mcp__plugin_vercel_vercel__replace_*",
+      "mcp__plugin_vercel_vercel__restore_*",
+      "mcp__plugin_vercel_vercel__stage_*",
+      "mcp__plugin_vercel_vercel__assign_alias",
+      "mcp__plugin_vercel_vercel__create_project_env",
+      "mcp__plugin_vercel_vercel__create_record",
+      "mcp__plugin_vercel_vercel__create_flag",
+      "mcp__plugin_vercel_vercel__create_drain",
+      "mcp__plugin_vercel_vercel__pause_project",
+      "mcp__plugin_vercel_vercel__unpause_project",
+      "mcp__plugin_vercel_vercel__buy_*",
+      "mcp__plugin_vercel_vercel__create_or_transfer_domain",
+      "mcp__plugin_vercel_vercel__invalidate_*",
+      "mcp__plugin_vercel_vercel__revoke_*",
+      "mcp__plugin_vercel_vercel__accept_project_transfer_request"
     ]
   },
   "hooks": {
@@ -122,14 +122,14 @@
           {
             "type": "command",
             "command": "/home/akhil/dev/claude-code-config/.claude/hooks/guard-git-secrets.sh",
-            "timeout": 10,
-            "if": "Bash(git *)"
+            "if": "Bash(git *)",
+            "timeout": 10
           },
           {
             "type": "command",
             "command": "/home/akhil/dev/claude-code-config/.claude/hooks/secret-scan-git.sh",
-            "timeout": 30,
-            "if": "Bash(git *)"
+            "if": "Bash(git *)",
+            "timeout": 30
           }
         ]
       },
@@ -289,12 +289,12 @@
   },
   "spinnerTipsEnabled": true,
   "effortLevel": "xhigh",
-  "tui": "fullscreen",
-  "skipWorkflowUsageWarning": true,
-  "verbose": false,
   "modelSettings": {
     "claude-opus-5-5": {
       "effortLevel": "medium"
     }
-  }
+  },
+  "tui": "fullscreen",
+  "skipWorkflowUsageWarning": true,
+  "verbose": false
 }
