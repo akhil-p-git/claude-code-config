@@ -1,353 +1,63 @@
-# Claude Code Ultimate Configuration
+# claude-code-config
 
-🚀 **The complete Claude Code setup with custom commands, AI models, and specialized agents**
+My global Claude Code configuration: instructions, rules, skills, subagents, hooks, and settings, version-controlled and symlinked into `~/.claude/`. Rebuilt in October 2026 from a survey of Anthropic's own guidance, the Claude Code team's published setups, the strongest public CLAUDE.md/AGENTS.md files, and the agent/skill/hook ecosystems — keeping only what measurably changes behavior.
 
-Transform your Claude Code CLI into a powerhouse development environment with:
-- **6 Git workflow commands** for effortless version control
-- **12 AI model integrations** (GPT-4, Claude Opus, Gemini, Llama, and more)
-- **11 specialized AI agents** (code reviewers, security auditors, performance optimizers)
-- **Security-first approach** with automatic secret detection
-- **100% portable** across all your machines
+## Design in one paragraph
+Claude Opus 5.x already knows general engineering practice, so always-on context is reserved for facts and gotchas it can't infer (about 12 KB: `CLAUDE.md` plus three small rules). Everything else loads on demand: language and topic rules are path-scoped, procedures are skills (side-effect ones are slash-only and cost nothing per turn), domain playbooks sit behind three hub skills, isolated or fresh-eyes work goes to a small set of trigger-described subagents, and anything that must hold every time is a hook or a permission rule rather than prose.
 
----
+## Layout
+| Path | What | Loads |
+| --- | --- | --- |
+| `.claude/CLAUDE.md` | Priorities, honesty, change discipline, verification, git safety, delegation, routing index. Maintainer notes live in an HTML comment (stripped, zero tokens). | Every session |
+| `.claude/rules/{storage,research,writing}.md` | Machine facts; citation discipline; writing for people (anti-slop, commits, PRs) | Every session |
+| `.claude/rules/*.md` (others) | `python`, `javascript-typescript`, `react`, `web-frontend`, `nodejs-backend`, `java`, `dotnet`, `c`, `database`, `api-design`, `testing`, `accessibility`, `security`, `engineering`, `devops`, `data`, `finance` | When a matching file is read or edited |
+| `.claude/skills/` | See below | Description listed; body on use |
+| `.claude/agents/` | 20 subagents (see below) | Description listed; body on delegation |
+| `.claude/commands/` | `reflect`, `commit-push-pr`, `handoff`, `catchup`, `security-check`, `ask`, `split-project` | Slash-only |
+| `.claude/hooks/` | Guards, gates, formatter, context restore (see below); tests in `hooks/tests/` | Wired in `settings.json` |
+| `.claude/settings.json` | Permissions, hooks, plugins, env | Every session |
+| `.claude/statusline.sh` | Model · effort · cwd · branch · PR / context bar · 5h & 7d usage · cost | Every render |
 
-## 📚 Documentation
+### Skills
+- **Workflow:** `spec` → `write-plan` → `execute-plan` (plan file is the ledger) · `research-codebase` · `diagnose` (reproduce first) · `review-diff` (review against intent, then triage) · `commit` · `deploy` · `release` · `incident` (respond / postmortem / SLO alerting) · `ship-check` · `new-project` · `a11y-audit` · `tech-docs` (Diátaxis) · `ui-craft` · `ask-model` (second opinion from GPT/Gemini/Grok/DeepSeek/Perplexity via OpenRouter).
+- **Domain hubs** (one listing entry each, routing to `references/*.md`): `marketing` (positioning, copy/CRO, SEO + AI search, launches, email, content, pricing), `product` (PRDs, interviews, tracking plans, experiments), `finance` (backtests with tested PSR/DSR/PBO scripts, market data, SEC EDGAR, statements, valuation, portfolio risk, personal finance).
 
-- **[WORKFLOW.md](WORKFLOW.md)** - Optimal AI workflow for your subscriptions (Claude, Cursor, ChatGPT, Gemini, Perplexity)
-- **[COMMANDS_REFERENCE.md](COMMANDS_REFERENCE.md)** - Complete guide to all commands, models, and agents
-- **[QUICK_START.md](QUICK_START.md)** - 5-minute setup guide
-- **[AGENTS_GUIDE.md](AGENTS_GUIDE.md)** - Detailed guide to specialized AI agents
-- **[MODEL_USAGE.md](MODEL_USAGE.md)** - Multi-model configuration and usage
-- **[.env.example](.env.example)** - Required environment variables
+### Subagents
+Reviewers and auditors (read-only, Bash backstopped by `readonly-bash-guard.sh`): `code-reviewer`, `security-auditor`, `silent-failure-hunter`, `ui-reviewer`, `dependency-auditor`, `tech-debt-analyzer`, `backtest-auditor`, `data-analyst`, `architect`, `researcher`. Runners and writers: `verifier`, `debugger`, `test-writer`, `refactorer`, `performance-optimizer`, `docs-writer`, `devops-expert`, `database-expert`, `llm-eval-designer`, `copy-editor`. Each description says when to use it and what to use instead.
 
----
+### Hooks
+| Hook | Event | Does |
+| --- | --- | --- |
+| `guard-destructive.sh` (+ `.jq`) | PreToolUse Bash/Monitor | Parses the command (quotes, heredocs, `bash -c`, `$(…)`) and denies catastrophic actions (`rm -rf ~`, force-push to main, `DROP DATABASE`, `curl \| sh`, `reset --hard` over uncommitted work) or asks for risky ones (prod deploys, publishes, force-push to feature branches). Fails closed. Audit log in `~/.claude/logs/guard-decisions.jsonl`. |
+| `guard-git-secrets.sh` | PreToolUse Bash | Blocks staging secret-shaped paths |
+| `secret-scan-git.sh` | PreToolUse Bash (`git *`) | Scans exactly what a commit/push would publish (gitleaks if installed) |
+| `protect-files.sh` | PreToolUse Edit/Write | Keeps hands off `.env*`, lockfiles, `.git/`, generated files |
+| `format-on-edit.sh` | PostToolUse Edit/Write | Formats only the touched file with the project's own formatter |
+| `note-verification.sh` + `verify-gate.sh` | PostToolUse(+Failure) Bash, Stop | Records checks; nudges once if source changed since the last passing check (`CLAUDE_VERIFY_GATE=block\|warn\|off`) |
+| `capture-lesson.sh` | UserPromptSubmit | Appends corrections to `~/.claude/lessons-inbox.md` for `/reflect` |
+| `session-start.sh` / `session-context.sh` | SessionStart startup\|clear / compact\|resume | Config-drift and inbox notices / re-injects live repo state after compaction |
+| `bash-audit-log.sh` | PostToolUse Bash (async) | Redacted command log in `~/.claude/logs/` |
+| `agent-write-guard.sh`, `readonly-bash-guard.sh` | Agent-scoped | Keep read-only agents read-only |
 
-## ⚡ Quick Access
+Run all hook tests: `bash .claude/hooks/tests/run-all.sh && bash .claude/hooks/tests/test-agent-guards.sh`.
 
+## Install on a machine
 ```bash
-# Start Claude Code
-claude
-
-# Git workflows
-/git-quick      # Quick commit and push
-/git-review     # Security-aware code review
-/pr             # Create GitHub pull request
-
-# AI models
-/gpt4o [question]     # Fast GPT-4
-/opus [question]      # Powerful Claude Opus
-/perplexity [question] # Web-connected research
-/compare [question]   # Ask multiple models
-
-# Specialized agents
-@code-reviewer        # Review code quality
-@security-auditor     # Security audit
-@frontend-expert      # React/UI help
-
-# Utilities
-/security-check       # Scan for secrets
-/ask [question]       # Quick Q&A
-/agents              # List all agents
-/models              # List all AI models
+git clone https://github.com/akhil-p-git/claude-code-config ~/dev/claude-code-config
+~/dev/claude-code-config/setup-claude.sh   # symlinks CLAUDE.md, settings.json, rules, skills, agents, commands, templates; installs enabled plugins
 ```
-
----
-
-## Features
-
-- **Global Settings** - Unified configuration with MCP servers for Git, GitHub, and Taskmaster
-- **Security First** - Hooks to prevent committing secrets, .env files, and .taskmaster/ directories
-- **Custom Commands** - Powerful slash commands for common workflows
-- **Portable** - One-command setup on any new machine
-- **Stack-Optimized** - Configured for JavaScript/TypeScript, React, Python, C, and Node.js
-
-## Quick Start
-
-### First Time Setup
-
-```bash
-# Clone this repo
-git clone YOUR_REPO_URL ~/my-dotfiles
-
-# Run setup script
-cd ~/my-dotfiles
-./setup-claude.sh
-```
-
-### Required Environment Variables
-
-Add to your `~/.zshrc` or `~/.bashrc`:
-
-```bash
-export ANTHROPIC_API_KEY='your-api-key-here'
-export GITHUB_TOKEN='your-github-token-here'
-```
-
-Then restart your terminal or run `source ~/.zshrc`
-
-## What's Included
-
-### 📁 Directory Structure
-
-```
-my-dotfiles/
-├── .claude/
-│   ├── settings.json          # Global Claude Code settings
-│   ├── CLAUDE.md              # Coding standards & guidelines
-│   ├── hooks/                 # Hook scripts (wired in settings.json)
-│   ├── commands/              # Custom slash commands
-│   │   ├── git-quick.md       # Quick git workflow
-│   │   ├── git-review.md      # Review with security checks
-│   │   ├── ask.md             # Research & questions
-│   │   ├── security-check.md  # Security audit
-│   │   ├── split-project.md   # Frontend/backend organization
-│   │   └── pr.md              # Create GitHub PR
-│   └── templates/             # .gitignore templates
-│       ├── gitignore-fullstack
-│       ├── gitignore-react
-│       └── gitignore-python
-├── setup-claude.sh            # Setup script for new machines
-└── README.md                  # This file
-```
-
-### ⚡ Custom Slash Commands
-
-| Command | Description |
-|---------|-------------|
-| `/git-quick` | Quick git workflow: status, stage, commit, push |
-| `/git-review` | Comprehensive review with security and quality checks |
-| `/ask [question]` | Quick research with project context |
-| `/security-check` | Scan for secrets, validate .gitignore |
-| `/split-project` | Organize project into frontend/backend structure |
-| `/pr` | Create GitHub pull request with intelligent description |
-
-### 🔌 MCP Servers
-
-Pre-configured integrations:
-
-- **Git** - Advanced git operations
-- **GitHub** - PR management, issues, CI status
-- **Taskmaster** - AI-powered task management
-
-### 🛡️ Security Features
-
-Automatic hooks that prevent:
-- ✗ Committing `.env` files
-- ✗ Committing `.taskmaster/` directories
-- ✗ Staging files with `git add *.env`
-- ✓ Validates `.gitignore` includes critical entries
-
-### 📋 Coding Standards (CLAUDE.md)
-
-Global coding standards include:
-- Frontend/backend separation guidelines
-- Language-specific best practices (JS/TS, React, Python, C, Node.js)
-- Security requirements (never commit secrets)
-- Testing standards (80% coverage minimum)
-- Git commit message format
-- Code review checklist
-
-## Usage
-
-### Starting a Session
-
-```bash
-# Interactive session
-claude
-
-# One-off question
-claude -p "your question here"
-
-# Continue previous conversation
-claude --continue
-```
-
-### Using Custom Commands
-
-```bash
-# In a Claude session
-/git-quick
-/security-check
-/ask how do I implement authentication?
-```
-
-### Project Setup
-
-For new projects, copy the appropriate .gitignore:
-
-```bash
-# Full-stack project
-cp ~/.claude/templates/gitignore-fullstack .gitignore
-
-# React project
-cp ~/.claude/templates/gitignore-react .gitignore
-
-# Python project
-cp ~/.claude/templates/gitignore-python .gitignore
-```
-
-### Validating Configuration
-
-```bash
-# Check everything is working
-claude doctor
-
-# View loaded configuration
-claude
-/config
-
-# Check MCP servers
-claude
-/mcp
-
-# View permissions
-/permissions
-```
-
-## Customization
-
-### Adding Your Own Commands
-
-Create a new markdown file in `.claude/commands/`:
-
-```markdown
----
-description: "Your command description"
-allowed-tools: ["Read", "Bash", "Write"]
-model: "claude-sonnet-4-5-20250929"
----
-
-Your command instructions here.
-
-Use $ARGUMENTS to access command arguments.
-
-! git status  # Execute bash commands with !
-```
-
-### Modifying Settings
-
-Edit `~/my-dotfiles/.claude/settings.json` and run `./setup-claude.sh` again.
-
-### Adding New Hooks
-
-Add the hook under the `hooks` key in `~/my-dotfiles/.claude/settings.json` (put any
-script in `.claude/hooks/` and `chmod +x` it). Hooks load from `settings.json`
-directly — there is no separate file to merge.
-
-## Syncing Across Machines
-
-### Initial Setup (Machine 1)
-
-```bash
-cd ~/my-dotfiles
-git init
-git add .
-git commit -m "Initial Claude Code configuration"
-git remote add origin git@github.com:yourusername/claude-dotfiles.git
-git push -u origin main
-```
-
-### Setup on Machine 2+
-
-```bash
-git clone git@github.com:yourusername/claude-dotfiles.git ~/my-dotfiles
-cd ~/my-dotfiles
-./setup-claude.sh
-```
-
-### Updating Configuration
-
-```bash
-cd ~/my-dotfiles
-# Make changes...
-git add .
-git commit -m "Update configuration"
-git push
-
-# On other machines
-cd ~/my-dotfiles
-git pull
-```
-
-## Cursor Integration
-
-This configuration works seamlessly with Cursor:
-
-1. Open Cursor
-2. Install "Claude Code" extension from marketplace
-3. Use the sidebar or integrated terminal
-
-All settings, commands, and MCP servers work identically in Cursor and VS Code.
-
-## Troubleshooting
-
-### MCP Servers Not Working
-
-```bash
-# Check server status
-claude
-/mcp
-
-# Verify environment variables
-echo $GITHUB_TOKEN
-echo $ANTHROPIC_API_KEY
-
-# Test server manually
-npx -y @modelcontextprotocol/server-git
-```
-
-### Hooks Not Firing
-
-Hooks live under the `hooks` key in `settings.json`. Confirm they're registered and the scripts are executable:
-
-```bash
-jq '.hooks | keys' ~/.claude/settings.json        # list configured hook events
-ls -l ~/dev/claude-code-config/.claude/hooks/      # scripts should be -rwxr-xr-x
-```
-
-### Commands Not Showing Up
-
-```bash
-# Verify symlink
-ls -la ~/.claude/commands
-
-# Should point to: ~/my-dotfiles/.claude/commands
-
-# Re-run setup
-cd ~/my-dotfiles
-./setup-claude.sh
-```
-
-### Permission Errors
-
-```bash
-# Check settings
-claude
-/permissions
-
-# Allow specific commands
-# Edit ~/.claude/settings.json and add to "permissions.allow"
-```
-
-## Best Practices
-
-1. **Never commit secrets** - Always use `.env` files (gitignored)
-2. **Run `/security-check`** before pushing code
-3. **Use `/git-review`** before creating commits
-4. **Keep .taskmaster/ gitignored** - Personal task management only
-5. **Split frontend/backend** - Use `/split-project` for organization
-6. **Update dependencies** - Run `npm audit` or `pip check` regularly
-
-## Contributing
-
-This is a personal configuration, but feel free to fork and customize for your needs!
-
-## Resources
-
-- [Claude Code Documentation](https://code.claude.com/docs)
-- [MCP Documentation](https://modelcontextprotocol.io)
-- [GitHub Tokens](https://github.com/settings/tokens)
-
-## License
-
-MIT - Feel free to use and modify as needed.
+Each of `rules/` and `skills/` needs its own symlink — Claude Code never discovers them relative to a symlinked `CLAUDE.md`. Verify from a neutral directory (not inside this repo, where `.claude/` also loads as project config): start `claude` in `/tmp` and check `/context` or `/memory`.
+
+Requirements: `jq`, `git`, `gh` (authenticated via `gh auth login`; never export `GITHUB_TOKEN`), Python 3, Node via fnm. Optional: `gitleaks`, `shellcheck`, language servers for the LSP plugins.
+
+## Plugins
+Enabled in `settings.json`: `vercel`, `code-simplifier`, `frontend-design`, `security-guidance` (per-turn Opus review off via `ENABLE_STOP_REVIEW=0`; commit/push review on), `context7`, `clangd-lsp`. Enabling a plugin doesn't install it; `setup-claude.sh` installs any enabled plugin that's missing.
+Worth enabling once their binaries exist: `typescript-lsp` (`typescript-language-server`), `pyright-lsp` (`pyright`), `jdtls-lsp`, `csharp-lsp`.
+On demand (enable, use, disable): `claude-security` (whole-repo audit), `pr-review-toolkit`, Trail of Bits `differential-review` / `supply-chain-risk-auditor`, coreyhaines31 `marketingskills` (project scope only — 50 skills overflow the listing budget), `anthropics/financial-services` (valuation models).
+Installs of skills and plugins require approval (`ask` rules in `settings.json`).
+
+## Keeping it good
+- Corrections are captured automatically; run `/reflect` to promote the durable ones (human-approved, with an enforcement ladder: linter → hook/permission → skill → path-scoped rule → CLAUDE.md).
+- After every model launch and every few months: `/doctor`, `/skill-doctor`, `/context`, `/reflect --prune`, `claude plugin validate ~/.claude/agents`, and the hook tests. Delete instructions the current model no longer needs.
+- `.claude/skills/synced/` (account-synced, partly proprietary) and hook test fixtures are gitignored; this repo is public.
+- MCP notes: [MCP.md](MCP.md). API keys for `ask-model`: see [.env.example](.env.example) (real values go in `~/.secrets.env`).
