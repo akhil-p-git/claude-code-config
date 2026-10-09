@@ -73,15 +73,6 @@ if [ -d "$HOME/.claude/agents" ] && [ ! -L "$HOME/.claude/agents" ]; then
 fi
 create_symlink "$DOTFILES_DIR/.claude/agents" "$HOME/.claude/agents"
 
-# 5. Link knowledge directory
-echo ""
-echo "📚 Setting up knowledge files..."
-if [ -d "$HOME/.claude/knowledge" ] && [ ! -L "$HOME/.claude/knowledge" ]; then
-    echo -e "${YELLOW}⚠️  Backing up existing knowledge to ~/.claude/knowledge.backup${NC}"
-    mv "$HOME/.claude/knowledge" "$HOME/.claude/knowledge.backup"
-fi
-create_symlink "$DOTFILES_DIR/.claude/knowledge" "$HOME/.claude/knowledge"
-
 # 6. Link templates directory
 echo ""
 echo "📄 Setting up templates..."
@@ -90,6 +81,20 @@ if [ -d "$HOME/.claude/templates" ] && [ ! -L "$HOME/.claude/templates" ]; then
     mv "$HOME/.claude/templates" "$HOME/.claude/templates.backup"
 fi
 create_symlink "$DOTFILES_DIR/.claude/templates" "$HOME/.claude/templates"
+
+# 7. Link rules + skills directories.
+#    Each needs its OWN symlink: Claude Code discovers user-level rules/skills only under
+#    ~/.claude/{rules,skills}, never relative to the resolved CLAUDE.md symlink. Without these,
+#    they silently load only as *project* config when you work inside this repo.
+for dir in rules skills; do
+    echo ""
+    echo "🔗 Setting up $dir..."
+    if [ -d "$HOME/.claude/$dir" ] && [ ! -L "$HOME/.claude/$dir" ]; then
+        echo -e "${YELLOW}⚠️  Backing up existing $dir to ~/.claude/$dir.backup${NC}"
+        mv "$HOME/.claude/$dir" "$HOME/.claude/$dir.backup"
+    fi
+    create_symlink "$DOTFILES_DIR/.claude/$dir" "$HOME/.claude/$dir"
+done
 
 # 8. Install machine-local .gitignore (REAL file, not a symlink — git won't follow
 #    a symlinked .gitignore). Protects secrets if $HOME becomes a public git repo.
@@ -132,9 +137,9 @@ else
 fi
 
 if [ -f "$HOME/.secrets.env" ]; then
-    echo -e "${GREEN}✓${NC} ~/.secrets.env present (optional API keys for /gpt4, /perplexity, ...)"
+    echo -e "${GREEN}✓${NC} ~/.secrets.env present (optional OpenRouter key for the ask-model skill)"
 else
-    echo -e "${YELLOW}ℹ${NC}  No ~/.secrets.env — only needed for the external-model commands (see .env.example)"
+    echo -e "${YELLOW}ℹ${NC}  No ~/.secrets.env — only needed for the ask-model skill (see .env.example)"
 fi
 
 # 6. Install/verify Claude Code
@@ -148,13 +153,25 @@ else
     echo "Install from: https://code.claude.com"
 fi
 
-# 7. Verify MCP servers are available
+# 7. Install the plugins settings.json enables. enabledPlugins only switches a plugin on; it never
+#    installs one, so without this step a fresh machine silently runs without them.
 echo ""
-echo "🔌 Verifying MCP server packages..."
-echo "  (Will be installed on first use by npx)"
-echo "  - @modelcontextprotocol/server-git"
-echo "  - @modelcontextprotocol/server-github"
-echo "  - task-master-ai"
+echo "🔌 Installing plugins enabled in settings.json..."
+if command -v claude &> /dev/null && command -v jq &> /dev/null; then
+    installed="$HOME/.claude/plugins/installed_plugins.json"
+    claude plugin marketplace add anthropics/claude-plugins-official >/dev/null 2>&1 || true
+    for p in $(jq -r '.enabledPlugins // {} | to_entries[] | select(.value == true) | .key' "$DOTFILES_DIR/.claude/settings.json"); do
+        if [ -f "$installed" ] && jq -e --arg p "$p" '.plugins[$p]' "$installed" >/dev/null 2>&1; then
+            echo -e "${GREEN}✓${NC} $p (already installed)"
+        elif claude plugin install "$p" >/dev/null 2>&1; then
+            echo -e "${GREEN}✓${NC} $p installed"
+        else
+            echo -e "${YELLOW}⚠️  Could not install $p; run: claude plugin install $p${NC}"
+        fi
+    done
+else
+    echo -e "${YELLOW}⚠️  Needs claude and jq; install plugins later with: claude plugin install <name>@claude-plugins-official${NC}"
+fi
 
 # 8. Initialize git repo for dotfiles if not already
 echo ""
@@ -193,13 +210,13 @@ echo -e "${GREEN}✓${NC} Global settings linked"
 echo -e "${GREEN}✓${NC} CLAUDE.md linked"
 echo -e "${GREEN}✓${NC} Custom commands linked"
 echo ""
-echo "📚 Available custom commands:"
-echo "  /git-quick       - Quick git workflow"
-echo "  /git-review      - Review changes with security checks"
-echo "  /ask [question]  - Quick research and questions"
-echo "  /security-check  - Scan for secrets and validate .gitignore"
-echo "  /split-project   - Organize frontend/backend structure"
-echo "  /pr              - Create GitHub pull request"
+echo "📚 Slash commands (see README.md for skills and agents):"
+echo "  /spec, /write-plan, /execute-plan  - Plan and build larger changes"
+echo "  /commit, /commit-push-pr           - Commit, or ship a PR with evidence"
+echo "  /deploy, /release                  - Guarded deploys and releases"
+echo "  /reflect                           - Promote captured corrections into rules"
+echo "  /handoff, /catchup                 - Save and restore session context"
+echo "  /security-check, /ask, /split-project"
 echo ""
 echo "🔧 Templates available in:"
 echo "  $DOTFILES_DIR/.claude/templates/"
@@ -211,7 +228,6 @@ echo "  3. Try '/help' to see all available commands"
 echo "  4. Run '/security-check' in your projects"
 echo ""
 echo "🌐 To set up on another machine:"
-echo "  git clone YOUR_REPO_URL ~/my-dotfiles"
-echo "  cd ~/my-dotfiles"
-echo "  ./setup-claude.sh"
+echo "  git clone https://github.com/akhil-p-git/claude-code-config ~/dev/claude-code-config"
+echo "  ~/dev/claude-code-config/setup-claude.sh   # hooks expect this path"
 echo ""
