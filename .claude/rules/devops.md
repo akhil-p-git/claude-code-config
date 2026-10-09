@@ -1,62 +1,61 @@
 ---
-description: "Containers, CI/CD, IaC, and deploy safety (Docker, Compose, GitHub Actions, Terraform, Kubernetes, Helm, Vercel)"
+description: "Containers, CI/CD, IaC, and deploy safety (Docker, Compose, GitHub Actions, Terraform/OpenTofu, Kubernetes, Helm, Vercel, Fly, Cloudflare)"
 paths:
-  - "**/Dockerfile*"
-  - "**/*.dockerfile"
+  - "**/{Dockerfile,Containerfile}*"
+  - "**/*.{dockerfile,containerfile}"
   - "**/.dockerignore"
-  - "**/compose*.y*ml"
-  - "**/docker-compose*.y*ml"
-  - "**/.github/workflows/**"
-  - "**/.github/actions/**"
-  - "**/*.tf"
-  - "**/*.tfvars"
-  - "**/*.tftest.hcl"
-  - "**/k8s/**"
-  - "**/kubernetes/**"
-  - "**/manifests/**"
-  - "**/helm/**"
-  - "**/charts/**"
-  - "**/Chart.yaml"
-  - "**/vercel.json"
-  - "**/fly.toml"
-  - "**/wrangler.toml"
-  - "**/railway.json"
+  - "**/{compose,docker-compose}*.{yml,yaml}"
+  - "**/.github/{workflows,actions}/**"
+  - "**/.github/dependabot.{yml,yaml}"
+  - "**/action.{yml,yaml}"
+  - "**/{renovate.json,renovate.json5,.renovaterc,.renovaterc.json}"
+  - "**/*.{tf,tfvars,tofu,tftest.hcl}"
+  - "**/terragrunt.hcl"
+  - "**/{k8s,kubernetes,manifests,helm,charts}/**"
+  - "**/{Chart,kustomization,skaffold}.{yml,yaml}"
+  - "**/vercel.{json,toml,ts,mts,js,mjs,cjs}"
+  - "**/{fly,netlify,railway}.toml"
+  - "**/{wrangler.toml,wrangler.json,wrangler.jsonc,railway.json,render.yaml,Procfile,.gitlab-ci.yml}"
 ---
 
 # DevOps, CI/CD & Infrastructure
 
-## Never without explicit approval for that run
-`terraform|tofu apply/destroy` (or any `-auto-approve`), `kubectl delete/drain/scale` or `helm uninstall` on a shared cluster, `docker compose down -v` / `docker volume rm|prune` / `docker system prune --volumes` (they delete database volumes), production deploys or promotions, and any data-loss flag used to get past a prompt (`drizzle-kit push --force`, `prisma migrate reset --force`, `prisma db push --accept-data-loss`). Real incidents in 2025–26 — including Claude Code wiping a production database with `drizzle-kit push --force` and running `terraform destroy` after a state mix-up — all came from exactly these. Stop at the plan/diff and show it.
+## Irreversible and production actions
+`hooks/guard-prod-actions.sh` blocks the irreversible ones (terraform/tofu `destroy` or `-auto-approve`, `drizzle-kit push --force`, `prisma migrate reset` / `--accept-data-loss` / `--force-reset`, `supabase db reset --linked`, `kubectl delete namespace|--all`, deleting Fly/Cloudflare/GitHub resources) and forces a prompt for deploys, promotions, rollbacks, publishes, releases, `apply`, remote migrations, secret changes, image pushes, `docker compose down -v`, and pushes. Never route around it (`sh -c`, full paths, env tricks) and never add a force flag to get past a prompt: stop at the plan or diff, show it, and hand the user the exact command (`! <cmd>`). Real 2026 agent incidents came from exactly these commands.
+- Keep production credentials and database URLs out of local `.env*` files and agent sessions; production migrations run in the platform's release phase or CI, never from this machine.
 
 ## Containers
 - Start Dockerfiles with `# syntax=docker/dockerfile:1` and `# check=error=true`; run `docker build --check .` and `hadolint` before building.
-- Multi-stage builds; the final stage holds only the runtime and built artifacts. Order layers lockfile → install → source; use `RUN --mount=type=cache` for package caches.
-- Pin base images as `name:exact-tag@sha256:<digest>`; never `latest`. Look digests up (`docker buildx imagetools inspect <ref>`) — never invent one. Prefer explicit Debian 13 tags (`node:24-trixie-slim`; plain `node:24-slim` is bookworm).
-- Never pass secrets via `ARG`/`ENV`/`--build-arg` (they persist in history and provenance): use `RUN --mount=type=secret,id=x,env=X` + `docker build --secret id=x,env=X`. `NEXT_PUBLIC_*` values are inlined into the bundle — never secrets.
-- Run as a numeric non-root `USER uid:gid` (`COPY --link --chown` must be numeric too). Exec-form `CMD`/`ENTRYPOINT`; Node needs `--init`/`init: true` (it isn't PID-1 safe); handle SIGTERM within the stop timeout.
-- Ship a `.dockerignore` covering `.git`, `node_modules`, `.next`, `.venv`, `.env*`, keys.
-- Compose: `compose.yaml` with top-level `name:`, no `version:`; validate with `docker compose config -q`; required vars as `${VAR:?msg}`; wait with `depends_on: {db: {condition: service_healthy}}` + a real healthcheck; publish dev ports on `127.0.0.1:` only (Docker's NAT bypasses ufw); secrets via top-level `secrets:` + `*_FILE` vars.
-- Postgres 18+ images: mount the volume at `/var/lib/postgresql`, not `/var/lib/postgresql/data` (the container exits otherwise). Major-version upgrades need `pg_upgrade` or dump/restore.
+- Multi-stage builds; the final stage holds only the runtime and built artifacts. Order layers lockfile → install → source; `RUN --mount=type=cache` for package caches.
+- Pin base images as `name:exact-tag@sha256:<digest>`, never `latest`; look digests up (`docker buildx imagetools inspect <ref>`), never invent one. Prefer explicit Debian 13 tags (`node:24-trixie-slim`; plain `node:24-slim` is bookworm). Node 24 is LTS until 26 takes over on 2026-10-28.
+- Never pass secrets via `ARG`/`ENV`/`--build-arg`: use `RUN --mount=type=secret,id=x,env=X`. `NEXT_PUBLIC_*` values are inlined into the client bundle.
+- Numeric non-root `USER uid:gid`; exec-form `CMD`; Node needs `--init`/`init: true`; handle SIGTERM within the stop timeout; add a `HEALTHCHECK` (or platform health check) that hits a real endpoint.
+- `.dockerignore` covers `.git`, `node_modules`, `.next`, `.venv`, `.env*`, keys. Deploy and roll back by image digest, not tag.
+- Compose: `compose.yaml` with top-level `name:`, no `version:`; `docker compose config -q`; `${VAR:?msg}` for required vars; `depends_on: {db: {condition: service_healthy}}` + a real healthcheck; dev ports on `127.0.0.1:` only (Docker's NAT bypasses ufw); `up -d --wait` in scripts.
+- Postgres 18+ images: mount the volume at `/var/lib/postgresql`, not `.../data`. Major upgrades need `pg_upgrade` or dump/restore.
 
 ## GitHub Actions
-- Pin third-party actions to a full commit SHA with a `# vX.Y.Z` comment (tags can be hijacked — trivy-action was, in March 2026). Lint workflows with `actionlint` and `zizmor`.
-- Default `permissions: contents: read` at the top; grant more per job. Prefer OIDC (`id-token: write`) to long-lived cloud keys; `actions/checkout` with `persist-credentials: false`.
-- Never interpolate untrusted `${{ github.event.* }}` (titles, bodies, branch names) into `run:` — pass through `env:`. Never check out PR head code in `pull_request_target`.
-- Set `timeout-minutes` and `concurrency` (cancel superseded PR runs, never in-flight deploys). No dependency caching in release/publish jobs.
-- Tags and releases created with `GITHUB_TOKEN` don't trigger other workflows — publish in the same job or use a GitHub App token.
+- Pin every action (including `actions/*`) to a full commit SHA with a `# vX.Y.Z` comment. Resolve SHAs with `gh api repos/OWNER/REPO/commits/vX.Y.Z --jq .sha` or `pinact run`; never write one from memory. Use current majors: Node 20 is gone from runners (2026-09-23), so `@v4`-era actions in older examples (including plugin skills) are stale. setup-uv publishes no major tags since v8.
+- Lint every workflow change with `actionlint` and `zizmor`. Dependabot doesn't alert on SHA-pinned actions, so zizmor's `known-vulnerable-actions` is the advisory check.
+- Top-level `permissions: contents: read` (or `{}`), more per job only. OIDC (`id-token: write`) over long-lived cloud keys; in the cloud trust policy pin `aud` exactly and `sub` to one repo plus a branch or environment, copying the repo's real `sub` format (repos created after 2026-07-15 default to an ID-based format), and never widen `sub` to fix an `aud` error. `actions/checkout` with `persist-credentials: false`. Pin `runs-on: ubuntu-24.04` (ubuntu-latest moves to 26.04 Oct–Nov 2026).
+- Never interpolate `${{ github.event.* }}`, step outputs, or secrets into `run:`; pass them through `env:`. Pass deploy tokens as env vars (`VERCEL_TOKEN`), never on argv. No `secrets: inherit`; no `toJSON(secrets)`.
+- Avoid `pull_request_target` (GitHub disables it by default on public repos from 2026-11-02) and treat `workflow_run` artifacts as untrusted. Never check out PR head code in either.
+- Every job gets `timeout-minutes`. CI: `concurrency` with `cancel-in-progress` for PRs. Deploy and release: `cancel-in-progress: false`, `cache-mode: none`, an `environment:` (reviewers if wanted), and no dependency caches.
+- Installs are frozen (`pnpm install --frozen-lockfile`, `npm ci`, `uv sync --locked`); never `npm install <pkg>` or `pip install <pkg>` ad hoc in a step.
+- Tags and releases created with `GITHUB_TOKEN` don't trigger other workflows: publish in the same workflow or use a GitHub App token. Prefer trusted publishing (npm, PyPI) over registry tokens.
+- Hardened starting points (CI for pnpm and uv, workflow lint, Dependabot with a cooldown, container publish, Vercel deploy, release-please) live in `~/.claude/templates/github/`. Their pins were resolved 2026-10-08: run `pinact run --verify` before committing one.
 
 ## Terraform / OpenTofu
-- Use the binary the repo uses (`tofu` vs `terraform`) and don't mix syntax. Saved plans only: `plan -input=false -out=tfplan` → I review `show tfplan` → `apply tfplan`. Plan files contain secrets in cleartext; never commit them.
-- Before trusting a plan, confirm backend, workspace, and cloud account. A plan that recreates existing infrastructure or destroys things you didn't touch means wrong/missing state: stop.
-- Never hand-edit state. Refactor with `moved` / `import` / `removed` blocks (a `removed` block destroys the resource unless `lifecycle { destroy = false }`). Keep `prevent_destroy` on stateful resources; never remove a guard to get a plan through.
-- `sensitive = true` only hides output — use ephemeral values / write-only arguments to keep secrets out of state. Pin `required_version`, providers (`~>`), and modules; commit `.terraform.lock.hcl`.
-- `terraform test` runs default to `command = apply` (real infrastructure); use `command = plan` with mocks unless I approve.
+- Use the binary the repo uses (`tofu` vs `terraform`). Saved plans only: `plan -input=false -out=tfplan` → user reviews `show tfplan` → user applies. Plan files contain secrets in cleartext; never commit them.
+- Before trusting a plan, confirm backend, workspace, and account. A plan that recreates existing infrastructure or destroys things you didn't touch means wrong or missing state: stop. Remote state with locking (S3 `use_lockfile = true`), never local state for shared infra.
+- Never hand-edit state. Refactor with `moved`/`import`/`removed` blocks (`removed` destroys unless `lifecycle { destroy = false }`). Keep `prevent_destroy` and provider deletion protection on stateful resources, and backups that survive deleting the resource.
+- Ephemeral values / write-only arguments keep secrets out of state (`sensitive` only hides output). Pin `required_version`, providers (`~>`), modules; commit `.terraform.lock.hcl`. `terraform test` defaults to `command = apply`: use `plan` + mocks unless approved.
 
 ## Kubernetes / Helm
 - Always pass explicit `--context` and `-n`. Validate before applying: `kubeconform -strict`, `kubectl diff --server-side`, `kubectl apply --server-side --dry-run=server`.
-- Images by digest; restricted Pod Security (non-root, drop ALL caps, no privilege escalation, seccomp RuntimeDefault); requests on every container; readiness for traffic, liveness never checks external dependencies; never commit `kind: Secret` manifests.
-- Helm 4 renamed flags (`--atomic` → `--rollback-on-failure`, `--force` → `--force-replace`) and doesn't wait unless `--wait`; preview upgrades with `helm diff upgrade` or `--dry-run=server`.
+- Images by digest; restricted Pod Security (non-root, drop ALL, no privilege escalation, seccomp RuntimeDefault); requests on every container; readiness gates traffic, liveness never checks dependencies; never commit `kind: Secret`.
+- Helm 4 renamed `--atomic` → `--rollback-on-failure` and `--force` → `--force-replace`; preview with `helm diff upgrade` or `--dry-run=server`.
 
-## Deploys (Vercel and others)
-- Preview deploys are fine; production deploys, promotions, rollbacks, domain/DNS and env-var changes need my go-ahead. Inspect deployment state and logs before changing configuration.
-- Every deploy needs a stated rollback path (previous deployment, flag off, revert) before it starts, and a post-deploy check (health endpoint, smoke test, error logs) after.
+## Deploys
+- Every deploy states its rollback path before it starts and is verified after (the `/deploy` skill). Rollback restores code, not data: if this deploy changes schema or stored formats, the previous version must still work against them (expand/contract, two-phase), or there is no rollback.
+- Vercel: stage a production build with `vercel deploy --prod --skip-domain`, verify that URL, then `vercel promote` it (instant, same artifact). Promoting a preview-built deployment creates a new production build instead.

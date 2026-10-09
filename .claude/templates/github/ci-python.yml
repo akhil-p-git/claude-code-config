@@ -1,0 +1,39 @@
+# Hardened CI for a Python repo managed with uv. Copy to .github/workflows/ci.yml.
+# Action pins are full commit SHAs resolved 2026-10-08; Dependabot keeps them current.
+# setup-uv publishes no major/minor tags since v8 (immutable releases): there is no @v10 to fall back to.
+# Validate edits with: actionlint && zizmor .github/workflows
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  check:
+    name: Lint, typecheck, test
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      # Python comes from .python-version / requires-python; uv comes from [tool.uv] required-version.
+      - uses: astral-sh/setup-uv@c18668ad3cf93ea998bef934396af7bb5c839dc7 # v10.2.0
+        with:
+          enable-cache: true
+
+      - run: uv sync --locked --all-extras --dev # --locked fails if uv.lock is stale
+      - run: uv run ruff check --output-format=github .
+      - run: uv run ruff format --check .
+      - run: uv run mypy .
+      - run: uv run pytest -q

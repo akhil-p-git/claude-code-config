@@ -1,0 +1,44 @@
+# Hardened CI for a Node/TypeScript repo (pnpm). Copy to .github/workflows/ci.yml.
+# Action pins are full commit SHAs resolved 2026-10-08 (`gh api repos/<owner>/<action>/commits/<tag> --jq .sha`);
+# Dependabot (github-actions ecosystem) keeps SHA + comment current. Re-verify with `pinact run --verify`.
+# Validate edits with: actionlint && zizmor .github/workflows
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  check:
+    name: Lint, typecheck, test, build
+    runs-on: ubuntu-24.04 # explicit image: ubuntu-latest moves to 26.04 during Oct 19 - Nov 19, 2026
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      # Reads the pnpm version from "packageManager" in package.json.
+      - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm # setup-node v6+ auto-caches only npm; pnpm needs this
+
+      # pnpm 11+ / npm 12+ block dependency install scripts by default: allow-list the few that need
+      # them (esbuild, sharp, prisma) in pnpm-workspace.yaml `allowBuilds` / package.json `allowScripts`.
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm run lint
+      - run: pnpm run typecheck
+      - run: pnpm test
+      - run: pnpm run build

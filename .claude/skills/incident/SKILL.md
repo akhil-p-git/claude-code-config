@@ -27,7 +27,7 @@ Read `references/postmortem.md` (template, blameless-language rules, action-item
 Read `references/slo-alerting.md` (multiwindow burn-rate table, page-vs-ticket rules, low-traffic caveats).
 
 ## Gotchas
-- Don't run destructive "fixes" (deleting data, force-pushing, recreating infrastructure) under time pressure — they turned recoverable incidents into data loss in several 2025–26 agent incidents.
+- Don't run destructive "fixes" (deleting data, force-pushing, recreating infrastructure) under time pressure — they turned recoverable incidents into data loss in several 2025–26 agent incidents. If data is already damaged, follow the data-loss branch in `references/respond.md` before touching anything.
 - "Human error" is never a root cause; refer to people by role ("the deployer"), including the user.
 - A postmortem with only "be more careful" / "improve monitoring" items has failed — every item needs a verifiable end state.
 - Always state explicitly whether any data was lost or corrupted, even when the answer is no.

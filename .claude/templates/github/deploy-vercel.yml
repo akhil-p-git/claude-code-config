@@ -1,0 +1,67 @@
+# Staged production deploy to Vercel from GitHub Actions: deploy with --skip-domain (production build,
+# no traffic), smoke-test that exact deployment, then `vercel promote` it (instant alias switch, same
+# artifact). Use ONLY if the Vercel Git integration isn't already deploying main, or you deploy twice.
+# Setup: add `vercel` as a pinned devDependency (lockfile-verified, not `npm i -g vercel@latest`);
+# environment "production" holds secret VERCEL_TOKEN (+ required reviewers if you want a human gate),
+# repo variables VERCEL_ORG_ID / VERCEL_PROJECT_ID, and secret VERCEL_AUTOMATION_BYPASS_SECRET if
+# Deployment Protection covers production deployment URLs. The app must serve GET /api/health.
+name: Deploy (Vercel)
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false # never cancel an in-flight deploy; a newer pending run replaces an older pending one
+
+jobs:
+  deploy:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    cache-mode: none # deploy job: no cache restore or save (cache poisoning)
+    environment:
+      name: production
+      url: ${{ steps.stage.outputs.url }}
+    env:
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }} # read from env by the CLI; never put it on argv
+      VERCEL_ORG_ID: ${{ vars.VERCEL_ORG_ID }}
+      VERCEL_PROJECT_ID: ${{ vars.VERCEL_PROJECT_ID }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .nvmrc
+          package-manager-cache: false
+      - run: pnpm install --frozen-lockfile
+
+      # Remote build keeps Vercel system env vars available at build time (`--prebuilt` loses them).
+      - name: Stage production deployment (no domains assigned)
+        id: stage
+        run: |
+          url=$(pnpm exec vercel deploy --prod --skip-domain --non-interactive)
+          echo "url=$url" >> "$GITHUB_OUTPUT"
+
+      - name: Smoke test the staged deployment
+        env:
+          URL: ${{ steps.stage.outputs.url }}
+          BYPASS: ${{ secrets.VERCEL_AUTOMATION_BYPASS_SECRET }}
+        run: |
+          curl --fail --silent --show-error --retry 5 --retry-all-errors --retry-delay 10 \
+            -H "x-vercel-protection-bypass: $BYPASS" "$URL/api/health"
+
+      - name: Promote to production
+        env:
+          URL: ${{ steps.stage.outputs.url }}
+        run: pnpm exec vercel promote "$URL" --timeout=5m --non-interactive
+
+      - name: Rollback hint
+        if: failure()
+        run: echo "::error::Deploy failed. If production is affected, roll back with 'vercel rollback' (Instant Rollback) after checking the previous deployment is compatible with the current database schema."

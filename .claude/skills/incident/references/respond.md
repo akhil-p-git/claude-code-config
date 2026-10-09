@@ -30,9 +30,9 @@ Sources: Google SRE book ch. 12/14 and Workbook ch. 9; PagerDuty incident respon
 Preserve evidence before restarts or rollbacks: logs, deployment IDs, error samples, screenshots.
 
 ## T+10–20 — mitigate (with IC approval)
-Generic mitigations, cheapest first: roll back / promote the previous good deployment · disable the feature flag · revert the config/env change · scale up or shed load · block abusive traffic · fail over · maintenance page. You need to know *where* the problem is, not the full *why*.
+Generic mitigations, cheapest first: roll back / promote the previous good deployment · disable the feature flag · revert the config/env change · scale up or shed load · block abusive traffic · fail over · maintenance page. You need to know *where* the problem is, not the full *why*. Rollback restores code, not data: before rolling back across a migration or a stored-format change, check that the previous version can read the current schema and data.
 
-On Vercel: read-only tools (list deployments, deployment events, runtime logs/errors) are free to use; rollback/promote changes production and needs the IC's go-ahead.
+On Vercel: read-only tools (list deployments, deployment events, runtime logs/errors) are free to use; rollback/promote changes production and needs the IC's go-ahead (enforced: `permissions.ask` covers the Vercel MCP write tools and `guard-prod-actions.sh` covers the CLI).
 
 ## Communication
 - First status note within ~5 minutes; then updates every 20–30 minutes, each with the time of the next update.
@@ -46,6 +46,9 @@ On Vercel: read-only tools (list deployments, deployment events, runtime logs/er
 - Resolved when user-facing impact has ended. Record time to detect (impact start → detected) and time to resolve (impact start → resolved).
 - Revert any temporary changes made during response, or list them as follow-ups.
 - Create the postmortem skeleton immediately (see `postmortem.md`).
+
+## Data loss or corruption
+Stop writes first (maintenance mode, revoke the writer, pause the job). Snapshot or dump the current state before ANY recovery step, even a damaged one. Restore into a NEW database or instance and compare; never run recovery commands against the only copy (in anthropics/claude-code#27063 the tables that survived the wipe were dropped during recovery attempts). Ask the provider early: point-in-time recovery, or a snapshot you can't see yourself (AWS support found one in the DataTalks.Club incident). Say plainly what is lost and what is recovered.
 
 ## Security incidents
 Stop the attack, cut the vector, isolate affected systems (don't delete — forensics needs them), rotate credentials, and keep communication private until the IC decides otherwise.

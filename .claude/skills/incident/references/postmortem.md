@@ -12,6 +12,7 @@ Status: Draft | In review | Final – actions open | Closed      Severity: SEV-1
 Owner: <one person>   Responders (by role): …   Incident date: …   Published: …
 Times (UTC): impact start · detected · mitigated · resolved  → time to detect / time to resolve
 Change-related?: yes/no — deployment / commit / PR
+Agent involvement?: none / agent + permission mode + the exact command it ran, and which guard or credential scope was missing
 
 ## Summary
 2–3 sentences: what users saw, for how long, how it was mitigated.
@@ -35,7 +36,7 @@ What was tried, what worked, what slowed us down. Was a generic mitigation (roll
 The (usually innocuous) event that activated latent conditions.
 
 ## Contributing factors
-2–5 conditions that had to be true for this to happen or to be this bad — technical, process, tooling, and what made the response harder. No names. No single "root cause".
+2–5 conditions that had to be true for this to happen or to be this bad — technical, process, tooling, and what made the response harder. No names. No single "root cause". Prompts worth checking: backups that live with the resource (snapshots deleted with the instance), production credentials reachable from a dev or agent session, no deletion protection, a restore that was never tested, a missing `ask`/deny guard on the command an agent ran.
 
 ## Lessons learned
 ### What went well

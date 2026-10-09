@@ -1,0 +1,30 @@
+# Conventional Commits -> release PR -> tag + GitHub release, via release-please.
+# Needs release-please-config.json + .release-please-manifest.json in the repo.
+# Tags/releases made with GITHUB_TOKEN do NOT trigger other workflows (e.g. a tag-triggered publish):
+# publish in a job of THIS workflow gated on `release_created`, or mint a GitHub App token instead.
+name: Release
+
+on:
+  push:
+    branches: [main]
+
+permissions: {}
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  release-please:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    cache-mode: none
+    permissions:
+      contents: write # tags and releases
+      pull-requests: write # the release PR
+    outputs:
+      release_created: ${{ steps.rp.outputs.release_created }}
+      tag_name: ${{ steps.rp.outputs.tag_name }}
+    steps:
+      - id: rp
+        uses: googleapis/release-please-action@45996ed1f6d02564a971a2fa1b5860e934307cf7 # v5.0.0

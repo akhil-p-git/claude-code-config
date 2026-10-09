@@ -20,7 +20,7 @@ Arguments: `$ARGUMENTS`. With `--dry-run` (or no version given), compute and sho
 | `cliff.toml` / `[tool.git-cliff]` | `git cliff --bumped-version` for the version, `git cliff --unreleased --tag vX.Y.Z --prepend CHANGELOG.md` for notes; bump manifests by hand. |
 | none of the above | Manual path below. |
 
-Then find the publish path: a workflow `on: push: tags` → pushing the tag publishes (watch it with `gh run watch`); `on: release: types: [published]` → the GitHub release must be created by a human credential or App token, never `GITHUB_TOKEN`. Never publish to npm/PyPI from this machine when a trusted-publishing workflow exists.
+Then find the publish path: a workflow `on: push: tags` → pushing the tag publishes (watch it with `gh run watch`); `on: release: types: [published]` → the GitHub release must be created by a human credential or App token (`actions/create-github-app-token` v3: input `client-id`; `app-id` is deprecated), never `GITHUB_TOKEN`. Never publish to npm/PyPI from this machine when a trusted-publishing workflow exists; with no workflow, prefer npm staged publishing (`npm stage publish`, npm ≥ 11.15.0) so the user approves with 2FA (`npm stage approve <id>`) over a direct `npm publish`. If the repo uses release-please, its action should be v5 (node24); the README examples still show `@v4`.
 
 ## 2. Preflight (all must hold)
 `git fetch origin --tags`; `git status --porcelain` empty; on the default branch; `git rev-list --left-right --count HEAD...origin/<branch>` is `0 0`; CI green on HEAD (`gh run list -b <branch> -L 3`); tests pass locally.
@@ -32,7 +32,7 @@ Then find the publish path: a workflow `on: push: tags` → pushing the tag publ
 - 0.x policy (tools disagree, so be explicit): breaking or feat → 0.(y+1).0; fix → 0.y.(z+1); go to 1.0.0 only when the user asks.
 - Pre-releases: Node uses SemVer `1.3.0-rc.0`; Python uses PEP 440 `1.3.0rc1` (`uv version --bump minor --bump rc`). Within the same base, bump only the counter. Stable notes are generated from the last *stable* tag.
 
-## 4. Changelog (Keep a Changelog 2.0)
+## 4. Changelog (Keep a Changelog 2.0.0, https://keepachangelog.com/en/2.0.0/; link that version in the file header)
 Rename `## [Unreleased]` to `## [X.Y.Z] - YYYY-MM-DD` (UTC date) and add a fresh empty Unreleased; fix the compare links at the bottom. Sections in order of urgency — Security, Removed, Changed, Deprecated, Fixed, Added — omitting empty ones; mark breaking changes with `**Breaking:**` inside their section. Summarize notable user-facing changes with the reason; don't paste the git log; drop anything not worth reading. No CHANGELOG.md yet → create one in this format.
 
 ## 5. Bump, commit, tag, push (after confirmation)
@@ -50,4 +50,5 @@ Watch the publish run to the end (`gh run watch <id> --exit-status`), then confi
 - Releases are immutable in practice: npm never reuses a version, PyPI never reuses a filename, GitHub immutable releases lock tags. A bad release is fixed forward with a new patch (`npm deprecate` / PyPI yank the bad one) — never by deleting and re-tagging.
 - `uv.lock` goes stale after any manual or tool bump of pyproject → run `uv lock` before committing.
 - npm 11+: publishing a pre-release needs `--tag next`; publishing a version lower than the registry's highest (backport) needs `--tag` too.
-- Tags/releases created with `GITHUB_TOKEN` don't trigger other workflows — publish in the same job or use a GitHub App token.
+- Tags/releases created with `GITHUB_TOKEN` don't trigger other workflows — publish in the same job or use a GitHub App token. Since 2026-06-11, PRs opened by a bot with `GITHUB_TOKEN` (release-please's release PR) run CI only after someone clicks "Approve workflows to run".
+- `guard-prod-actions` prompts on `git push`, `gh release create`, and `npm`/`pnpm publish`. Those prompts are the confirmation steps: run them as separate commands, never chained to save prompts.
