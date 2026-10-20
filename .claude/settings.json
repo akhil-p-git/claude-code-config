@@ -13,9 +13,6 @@
       "Bash(npm:*)",
       "Bash(pnpm:*)",
       "Bash(yarn:*)",
-      "Bash(node:*)",
-      "Bash(python:*)",
-      "Bash(python3:*)",
       "Bash(pip:*)",
       "Bash(gcc:*)",
       "Bash(make:*)",
@@ -290,6 +287,12 @@
   "effortLevel": "xhigh",
   "modelSettings": {
     "claude-opus-5-5": {
+      "effortLevel": "medium"
+    },
+    "claude-fable-5-1": {
+      "effortLevel": "medium"
+    },
+    "claude-sonnet-4-6": {
       "effortLevel": "medium"
     }
   },
