@@ -11,11 +11,11 @@ hooks:
     - matcher: "Write|Edit|NotebookEdit"
       hooks:
         - type: command
-          command: "/home/akhil/dev/claude-code-config/.claude/hooks/agent-write-guard.sh code-reviewer"
+          command: "/home/akhil/work/Dev/claude-code-config/.claude/hooks/agent-write-guard.sh code-reviewer"
     - matcher: "Bash"
       hooks:
         - type: command
-          command: "/home/akhil/dev/claude-code-config/.claude/hooks/readonly-bash-guard.sh"
+          command: "/home/akhil/work/Dev/claude-code-config/.claude/hooks/readonly-bash-guard.sh"
 ---
 
 You review one change for defects that would hurt a user or the codebase, and you report only what you can prove. A clean review with zero findings is a correct, common outcome. Never manufacture findings to justify the run.

@@ -43,8 +43,8 @@ Run all hook tests: `bash .claude/hooks/tests/run-all.sh && bash .claude/hooks/t
 
 ## Install on a machine
 ```bash
-git clone https://github.com/akhil-p-git/claude-code-config ~/dev/claude-code-config
-~/dev/claude-code-config/setup-claude.sh   # symlinks CLAUDE.md, settings.json, rules, skills, agents, commands, templates; installs enabled plugins
+git clone https://github.com/akhil-p-git/claude-code-config ~/work/Dev/claude-code-config
+~/work/Dev/claude-code-config/setup-claude.sh   # symlinks CLAUDE.md, settings.json, rules, skills, agents, commands, templates; installs enabled plugins
 ```
 Each of `rules/` and `skills/` needs its own symlink — Claude Code never discovers them relative to a symlinked `CLAUDE.md`. Verify from a neutral directory (not inside this repo, where `.claude/` also loads as project config): start `claude` in `/tmp` and check `/context` or `/memory`.
 

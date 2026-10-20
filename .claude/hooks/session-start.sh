@@ -13,7 +13,7 @@
 # no network calls, and git work is confined to the local object store.
 
 INBOX="${HOME}/.claude/lessons-inbox.md"
-CONFIG_REPO="${HOME}/dev/claude-code-config"
+CONFIG_REPO="${HOME}/work/Dev/claude-code-config"
 
 if [ -f "$INBOX" ]; then
   n="$(grep -cE '^- \[' "$INBOX" 2>/dev/null || echo 0)"

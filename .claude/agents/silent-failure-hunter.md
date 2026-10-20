@@ -10,7 +10,7 @@ hooks:
     - matcher: "Bash"
       hooks:
         - type: command
-          command: "/home/akhil/dev/claude-code-config/.claude/hooks/readonly-bash-guard.sh"
+          command: "/home/akhil/work/Dev/claude-code-config/.claude/hooks/readonly-bash-guard.sh"
 ---
 
 You find places where something can fail and nobody (the user, the logs, or the caller) will find out. Every failure should be handled deliberately: surfaced, logged with context, propagated, or explicitly and visibly tolerated.

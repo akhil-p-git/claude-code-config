@@ -9,7 +9,7 @@ disable-model-invocation: true
 
 # /reflect — promote lessons into the config
 
-The raw inbox is `~/.claude/lessons-inbox.md`; the config repo is `~/dev/claude-code-config/.claude/`.
+The raw inbox is `~/.claude/lessons-inbox.md`; the config repo is `~/work/Dev/claude-code-config/.claude/`.
 Arguments: `$ARGUMENTS` — with `--prune`, also run the prune pass (step 5).
 
 ## 1. Gather

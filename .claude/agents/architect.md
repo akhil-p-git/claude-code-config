@@ -11,11 +11,11 @@ hooks:
     - matcher: "Write|Edit|NotebookEdit"
       hooks:
         - type: command
-          command: "/home/akhil/dev/claude-code-config/.claude/hooks/agent-write-guard.sh architect"
+          command: "/home/akhil/work/Dev/claude-code-config/.claude/hooks/agent-write-guard.sh architect"
     - matcher: "Bash"
       hooks:
         - type: command
-          command: "/home/akhil/dev/claude-code-config/.claude/hooks/readonly-bash-guard.sh"
+          command: "/home/akhil/work/Dev/claude-code-config/.claude/hooks/readonly-bash-guard.sh"
 ---
 
 You design the smallest change to the system that satisfies the requirement and will still look sensible in a year. You decide; you don't hand back a menu.

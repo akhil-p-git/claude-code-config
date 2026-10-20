@@ -10,7 +10,7 @@ hooks:
     - matcher: "Bash"
       hooks:
         - type: command
-          command: "/home/akhil/dev/claude-code-config/.claude/hooks/readonly-bash-guard.sh"
+          command: "/home/akhil/work/Dev/claude-code-config/.claude/hooks/readonly-bash-guard.sh"
 ---
 
 You find the debt that is actually costing time or risk in this codebase and rank it so the next hour of cleanup goes to the right place. Generic advice is worthless here; every item needs evidence from this repo.

@@ -107,24 +107,24 @@
         "hooks": [
           {
             "type": "command",
-            "command": "/home/akhil/dev/claude-code-config/.claude/hooks/guard-destructive.sh",
+            "command": "/home/akhil/work/Dev/claude-code-config/.claude/hooks/guard-destructive.sh",
             "timeout": 10,
             "onFailure": "block"
           },
           {
             "type": "command",
-            "command": "/home/akhil/dev/claude-code-config/.claude/hooks/guard-prod-actions.sh",
+            "command": "/home/akhil/work/Dev/claude-code-config/.claude/hooks/guard-prod-actions.sh",
             "timeout": 10
           },
           {
             "type": "command",
-            "command": "/home/akhil/dev/claude-code-config/.claude/hooks/guard-git-secrets.sh",
+            "command": "/home/akhil/work/Dev/claude-code-config/.claude/hooks/guard-git-secrets.sh",
             "if": "Bash(git *)",
             "timeout": 10
           },
           {
             "type": "command",
-            "command": "/home/akhil/dev/claude-code-config/.claude/hooks/secret-scan-git.sh",
+            "command": "/home/akhil/work/Dev/claude-code-config/.claude/hooks/secret-scan-git.sh",
             "if": "Bash(git *)",
             "timeout": 30
           }
@@ -135,13 +135,13 @@
         "hooks": [
           {
             "type": "command",
-            "command": "/home/akhil/dev/claude-code-config/.claude/hooks/guard-destructive.sh",
+            "command": "/home/akhil/work/Dev/claude-code-config/.claude/hooks/guard-destructive.sh",
             "timeout": 10,
             "onFailure": "block"
           },
           {
             "type": "command",
-            "command": "/home/akhil/dev/claude-code-config/.claude/hooks/guard-prod-actions.sh",
+            "command": "/home/akhil/work/Dev/claude-code-config/.claude/hooks/guard-prod-actions.sh",
             "timeout": 10
           }
         ]
@@ -151,7 +151,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "/home/akhil/dev/claude-code-config/.claude/hooks/protect-files.sh",
+            "command": "/home/akhil/work/Dev/claude-code-config/.claude/hooks/protect-files.sh",
             "timeout": 10
           }
         ]
@@ -163,12 +163,12 @@
         "hooks": [
           {
             "type": "command",
-            "command": "/home/akhil/dev/claude-code-config/.claude/hooks/note-verification.sh",
+            "command": "/home/akhil/work/Dev/claude-code-config/.claude/hooks/note-verification.sh",
             "timeout": 10
           },
           {
             "type": "command",
-            "command": "/home/akhil/dev/claude-code-config/.claude/hooks/bash-audit-log.sh",
+            "command": "/home/akhil/work/Dev/claude-code-config/.claude/hooks/bash-audit-log.sh",
             "async": true
           }
         ]
@@ -178,7 +178,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "/home/akhil/dev/claude-code-config/.claude/hooks/bash-audit-log.sh",
+            "command": "/home/akhil/work/Dev/claude-code-config/.claude/hooks/bash-audit-log.sh",
             "async": true
           }
         ]
@@ -188,7 +188,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "/home/akhil/dev/claude-code-config/.claude/hooks/format-on-edit.sh",
+            "command": "/home/akhil/work/Dev/claude-code-config/.claude/hooks/format-on-edit.sh",
             "timeout": 30
           }
         ]
@@ -200,12 +200,12 @@
         "hooks": [
           {
             "type": "command",
-            "command": "/home/akhil/dev/claude-code-config/.claude/hooks/note-verification.sh",
+            "command": "/home/akhil/work/Dev/claude-code-config/.claude/hooks/note-verification.sh",
             "timeout": 10
           },
           {
             "type": "command",
-            "command": "/home/akhil/dev/claude-code-config/.claude/hooks/bash-audit-log.sh",
+            "command": "/home/akhil/work/Dev/claude-code-config/.claude/hooks/bash-audit-log.sh",
             "async": true
           }
         ]
@@ -216,7 +216,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "/home/akhil/dev/claude-code-config/.claude/hooks/capture-lesson.sh",
+            "command": "/home/akhil/work/Dev/claude-code-config/.claude/hooks/capture-lesson.sh",
             "timeout": 10
           }
         ]
@@ -228,7 +228,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "/home/akhil/dev/claude-code-config/.claude/hooks/session-start.sh",
+            "command": "/home/akhil/work/Dev/claude-code-config/.claude/hooks/session-start.sh",
             "timeout": 10
           }
         ]
@@ -238,7 +238,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "/home/akhil/dev/claude-code-config/.claude/hooks/session-context.sh",
+            "command": "/home/akhil/work/Dev/claude-code-config/.claude/hooks/session-context.sh",
             "timeout": 10
           }
         ]
@@ -249,7 +249,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "/home/akhil/dev/claude-code-config/.claude/hooks/verify-gate.sh",
+            "command": "/home/akhil/work/Dev/claude-code-config/.claude/hooks/verify-gate.sh",
             "timeout": 15
           }
         ]
@@ -260,7 +260,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "/home/akhil/dev/claude-code-config/.claude/hooks/notify.sh",
+            "command": "/home/akhil/work/Dev/claude-code-config/.claude/hooks/notify.sh",
             "timeout": 10
           }
         ]
@@ -269,7 +269,7 @@
   },
   "statusLine": {
     "type": "command",
-    "command": "/home/akhil/dev/claude-code-config/.claude/statusline.sh",
+    "command": "/home/akhil/work/Dev/claude-code-config/.claude/statusline.sh",
     "padding": 1
   },
   "enabledPlugins": {
@@ -301,33 +301,6 @@
   "skipWorkflowUsageWarning": true,
   "verbose": false,
   "autoMode": {
-    "environment": [
-      "### Org-wide",
-      "**Organization**: None configured",
-      "**Cloud provider(s)**: None configured",
-      "**Repository visibility**: assume private unless the remote host and repo name indicate otherwise, or a visibility check in the transcript shows public — not queryable for the starting directory (no git remotes present); ~/dev/claude-code-config (github.com/akhil-p-git/claude-code-config) is PUBLIC per its own CLAUDE.md",
-      "**Internal sharing / snippet hosting**: None configured — treat public paste/gist services as outside the trust boundary",
-      "**Secrets management**: None configured",
-      "**Default / protected branches**: not queryable (gh lookup unavailable; no git remote in starting directory)",
-      "**CI/CD deploy targets**: None configured",
-      "**Network posture**: None configured",
-      "**Host containment**: None configured — assume Claude Code runs on an ordinary developer machine or CI runner with open internet",
-      "**Source control**: The trusted repo and its remote(s) only (no additional orgs configured)",
-      "**Trusted internal domains**: None configured",
-      "**Trusted cloud buckets**: None configured — rapidphotoupload-media (config-derived — not a confirmed upload destination; uploads of local data still require confirmation) was found once in one config file in the repo tree and is not usage-corroborated, so it is not adopted as trusted",
-      "**Key internal services**: None configured",
-      "**Internal package registry**: None configured",
-      "**Sensitive data locations & audiences**: any file or store holding personal data, confidential business data, credentials, regulated data, or similarly sensitive material; preserve exact handles when known and share only with audiences cleared at the [named+specifics] bar — note: scan found .env/.env.local files under work/ (hrApp, Social Media Bot, localLLM, localAI) and .claude/.credentials.json, treat as credential-bearing",
-      "**Data retention / declassification**: None configured",
-      "**Sensitive remote targets**: any namespace, host, or container whose name carries `prod` or `production` as a whole word or name segment",
-      "**Protected deployment namespaces / environments**: None configured — fall back to the Sensitive remote targets heuristic",
-      "**Protected IaC scopes**: IAM, RBAC, networking, quota, and node-pool resources; anything whose name or tag carries `prod` or `production` as a whole word or name segment",
-      "### User-specific",
-      "**Primary use of Claude Code**: software development, including maintenance of a personal public Claude Code config repo (~/dev/claude-code-config, github.com/akhil-p-git/claude-code-config, PUBLIC)",
-      "**Trusted repo**: no git repository detected at the starting directory (/home/akhil has 0 tracked files, no remotes); ~/dev/claude-code-config (github.com/akhil-p-git/claude-code-config, PUBLIC) is the one repo with corroborated identity from its own docs — treat other repos under ~ (hrApp, java-core, kedb-tracker, triagebot, statuspulse, java-practice) as unvetted candidates, not trusted, since scope is just-this-project and none is the working repo",
-      "**Org-specific CLIs**: None configured",
-      "routine under claude-code-config/ prefix: per that repo's own CLAUDE.md, \"git push\" there is a standing exception to the push-approval rule — unverified provenance from repo-authored docs, not adopted as a trust grant here, offered only as context"
-    ],
     "classifyAllShell": true
   }
 }

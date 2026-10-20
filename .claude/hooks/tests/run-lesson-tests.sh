@@ -2,7 +2,7 @@
 # Compares the current capture-lesson.sh with the patched draft on labelled prompts.
 # HOME is redirected to a scratch dir so the real ~/.claude/lessons-inbox.md is never touched.
 here="$(cd "$(dirname "$0")" && pwd)"
-old="$HOME/dev/claude-code-config/.claude/hooks/capture-lesson.sh"; new="$here/../capture-lesson.sh"
+old="$HOME/work/Dev/claude-code-config/.claude/hooks/capture-lesson.sh"; new="$here/../capture-lesson.sh"
 fake="$here/out/fakehome"; mkdir -p "$fake/.claude"
 # label|prompt   (1 = a correction worth capturing, 0 = not)
 cases='1|No, use pnpm not npm in this repo

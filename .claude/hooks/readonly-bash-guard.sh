@@ -11,7 +11,7 @@
 #       - matcher: "Bash"
 #         hooks:
 #           - type: command
-#             command: "/home/akhil/dev/claude-code-config/.claude/hooks/readonly-bash-guard.sh"
+#             command: "/home/akhil/work/Dev/claude-code-config/.claude/hooks/readonly-bash-guard.sh"
 # Tests: test-guards.sh (exit 2 = blocked, 0 = allowed).
 set -uo pipefail
 

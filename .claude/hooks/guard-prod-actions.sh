@@ -40,7 +40,7 @@ shopt -s nocasematch
 [[ $cmd =~ $fast_prog || $cmd =~ $fast_word ]] || exit 0
 shopt -u nocasematch
 cwd=$(jq -r '.cwd // empty' <<<"$input" 2>/dev/null)
-config_repo="$HOME/dev/claude-code-config"
+config_repo="$HOME/work/Dev/claude-code-config"
 
 raw=$cmd
 # Heredoc bodies are data unless fed to a shell.

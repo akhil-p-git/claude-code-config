@@ -12,7 +12,7 @@ Verified 2026-10-08 — re-check with `df -h / /home ~/work` before trusting the
 | `/home` | 1.8 TB | home, media, user-space toolchains |
 | `~/work` (WORK_SSD) | 916 GB | dev work: new projects go in `~/work/Dev/<name>` |
 
-- `/mnt/work` no longer exists; any path starting with it is stale. `~/dev` is a plain directory on `/home` (this config repo and study repos).
+- `/mnt/work` no longer exists; any path starting with it is stale. `~/dev` no longer exists; all projects, including this config repo, live in `~/work/Dev`.
 - `/` fills up from Docker (`/var/lib/docker` is on `/`; the old `~/work/docker-data` is unused) and pacman packages. The pacman cache is already on `~/work`. Run `df -h /` before installs, image pulls, or large builds; never put caches, models, datasets, or VM/container images on `/`.
 - Toolchains: Node via fnm (`--use-on-cd`; global npm packages are per Node version); Java = pacman JDK 21 (`archlinux-java`); .NET 10 SDK in `~/.dotnet`; Python via `uv` (system Python is externally managed). `/opt/cuda` is in use — never remove it.
 - After a `pacman -Syu` that upgrades `linux`, Docker networking breaks (veth) until reboot: compare `uname -r` with `ls /usr/lib/modules` and ask me to reboot.

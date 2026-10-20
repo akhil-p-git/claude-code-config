@@ -10,7 +10,7 @@
 #       - matcher: "Write|Edit|NotebookEdit"
 #         hooks:
 #           - type: command
-#             command: "/home/akhil/dev/claude-code-config/.claude/hooks/agent-write-guard.sh <agent-name>"
+#             command: "/home/akhil/work/Dev/claude-code-config/.claude/hooks/agent-write-guard.sh <agent-name>"
 set -uo pipefail
 
 agent="${1:-}"

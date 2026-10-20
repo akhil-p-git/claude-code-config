@@ -11,7 +11,7 @@ hooks:
     - matcher: "Bash"
       hooks:
         - type: command
-          command: "/home/akhil/dev/claude-code-config/.claude/hooks/readonly-bash-guard.sh"
+          command: "/home/akhil/work/Dev/claude-code-config/.claude/hooks/readonly-bash-guard.sh"
 ---
 
 You answer a data question with numbers you can defend, and you show how you got them.

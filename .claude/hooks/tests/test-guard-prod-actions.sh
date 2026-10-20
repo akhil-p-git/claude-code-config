@@ -19,16 +19,16 @@ case_() { # expect(allow|ask|deny) command [cwd]
 }
 
 # --- config-repo push exemption via cd / -C (added on install)
-case_ allow 'git push' /home/akhil/dev/claude-code-config
-case_ allow 'git -C ~/dev/claude-code-config push' /home/akhil
-case_ allow 'git -C /home/akhil/dev/claude-code-config push origin master' /home/akhil
-case_ allow 'cd ~/dev/claude-code-config && git push' /home/akhil
-case_ allow 'cd ~/dev/claude-code-config && git add -A && git commit -q -F /tmp/m.txt && git push 2>&1 | tail -3' /home/akhil
-case_ ask   'cd ~/dev/claude-code-config && git push --force' /home/akhil
-case_ ask   'git -C ~/dev/claude-code-config push --tags' /home/akhil
-case_ ask   'cd ~/work/Dev/x && git push' /home/akhil/dev/claude-code-config
-case_ ask   'git -C /tmp push' /home/akhil/dev/claude-code-config
-case_ ask   'cd "$HOME/dev/claude-code-config" && git push' /home/akhil
+case_ allow 'git push' /home/akhil/work/Dev/claude-code-config
+case_ allow 'git -C ~/work/Dev/claude-code-config push' /home/akhil
+case_ allow 'git -C /home/akhil/work/Dev/claude-code-config push origin master' /home/akhil
+case_ allow 'cd ~/work/Dev/claude-code-config && git push' /home/akhil
+case_ allow 'cd ~/work/Dev/claude-code-config && git add -A && git commit -q -F /tmp/m.txt && git push 2>&1 | tail -3' /home/akhil
+case_ ask   'cd ~/work/Dev/claude-code-config && git push --force' /home/akhil
+case_ ask   'git -C ~/work/Dev/claude-code-config push --tags' /home/akhil
+case_ ask   'cd ~/work/Dev/x && git push' /home/akhil/work/Dev/claude-code-config
+case_ ask   'git -C /tmp push' /home/akhil/work/Dev/claude-code-config
+case_ ask   'cd "$HOME/work/Dev/claude-code-config" && git push' /home/akhil
 
 # --- must stay silent (normal permission flow)
 case_ allow 'vercel deploy'
@@ -61,7 +61,7 @@ case_ allow 'gh api repos/o/r/releases/latest --jq .tag_name'
 case_ allow 'git commit -m "ci: add vercel --prod step and terraform destroy docs"'
 case_ allow 'grep -rn "terraform destroy" docs/'
 case_ allow 'echo "run: vercel --prod"'
-case_ allow 'git push' "$HOME/dev/claude-code-config"
+case_ allow 'git push' "$HOME/work/Dev/claude-code-config"
 case_ allow 'git log --oneline -5'
 case_ allow 'fly status'
 case_ allow 'fly logs'
@@ -120,7 +120,7 @@ case_ ask 'gh api -X DELETE repos/o/r/git/refs/tags/v1'
 case_ ask 'gh api repos/o/r/deployments --method POST -f ref=main'
 case_ ask 'git push origin main'
 case_ ask 'git push'
-case_ ask 'git push --force-with-lease' "$HOME/dev/claude-code-config"
+case_ ask 'git push --force-with-lease' "$HOME/work/Dev/claude-code-config"
 case_ ask 'git push origin v1.2.3 --follow-tags'
 case_ ask 'git push --atomic origin HEAD:main v1.2.3'
 case_ ask 'npm run build && vercel --prod'
