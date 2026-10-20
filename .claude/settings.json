@@ -278,7 +278,32 @@
     "frontend-design@claude-plugins-official": true,
     "security-guidance@claude-plugins-official": true,
     "context7@claude-plugins-official": true,
-    "clangd-lsp@claude-plugins-official": true
+    "clangd-lsp@claude-plugins-official": true,
+    "rust-analyzer-lsp@claude-plugins-official": true,
+    "godot-prompter@godot-prompter-marketplace": true,
+    "godot@skills": true,
+    "godot@awesome-gamedev-agent-skills": true,
+    "router@awesome-gamedev-agent-skills": true
+  },
+  "extraKnownMarketplaces": {
+    "godot-prompter-marketplace": {
+      "source": {
+        "source": "github",
+        "repo": "jame581/GodotPrompter"
+      }
+    },
+    "skills": {
+      "source": {
+        "source": "github",
+        "repo": "randroids-dojo/skills"
+      }
+    },
+    "awesome-gamedev-agent-skills": {
+      "source": {
+        "source": "github",
+        "repo": "gamedev-skills/awesome-gamedev-agent-skills"
+      }
+    }
   },
   "sandbox": {
     "enabled": false,
@@ -295,11 +320,15 @@
     },
     "claude-sonnet-4-6": {
       "effortLevel": "medium"
+    },
+    "claude-sonnet-5-5": {
+      "effortLevel": "high"
     }
   },
   "tui": "fullscreen",
   "skipWorkflowUsageWarning": true,
   "verbose": false,
+  "agentPushNotifEnabled": true,
   "autoMode": {
     "classifyAllShell": true
   }
