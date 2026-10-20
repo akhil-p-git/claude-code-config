@@ -66,10 +66,15 @@ claude attach feature-b          # open one; Ctrl+Z returns to the shell, it kee
 claude logs|stop|respawn|rm <id|name>
 ```
 `--tmux` (with `-w`) puts the worktree session in tmux. Run 2-3 at a time; the limit is how much you can review.
+Combine the flags per task: `claude --bg -w <name> -n <name> --permission-mode acceptEdits --allowedTools "Bash(uv run pytest:*)" -- "<prompt>"`. Check status with `claude agents --json --cwd "$PWD"` (`state` is `working` or `done`); `claude logs` prints raw terminal escape codes.
+Tested with two agents on separate files: each committed on its own `worktree-<name>` branch, both merged cleanly.
 Before the first run in a repo:
+- `--bg` fails with "Workspace not trusted" until you run `claude` once in that directory and accept the prompt.
+- Worktrees live in `.claude/worktrees/`; add that to `.gitignore` or `main` shows it as untracked.
 - Gitignored files (`.env`) don't exist in a fresh worktree; copy what the task needs, and install dependencies.
 - Compose stacks that publish fixed host ports can't run in two worktrees at once; parameterize the ports or run that stack in one worktree only.
 - Give each agent a task that touches different files, and read each diff before merging.
+- Cleanup is `claude rm <id>`. It refuses while the worktree holds commits that exist on no remote and prints the `--discard-unpushed` command; merge first, check `git merge-base --is-ancestor <commit> main`, then run what it printed.
 
 ## Keeping it good
 - Corrections are captured automatically; run `/reflect` to promote the durable ones (human-approved, with an enforcement ladder: linter → hook/permission → skill → path-scoped rule → CLAUDE.md).
