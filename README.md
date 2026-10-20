@@ -56,6 +56,21 @@ Worth enabling once their binaries exist: `typescript-lsp` (`typescript-language
 On demand (enable, use, disable): `claude-security` (whole-repo audit), `pr-review-toolkit`, Trail of Bits `differential-review` / `supply-chain-risk-auditor`, coreyhaines31 `marketingskills` (project scope only — 50 skills overflow the listing budget), `anthropics/financial-services` (valuation models).
 Installs of skills and plugins require approval (`ask` rules in `settings.json`).
 
+## Running agents in parallel
+Claude Code (checked against 2.1.304 `--help`) covers this without wrapper scripts:
+```bash
+claude -w feature-a              # new git worktree + session for one task
+claude --bg -n feature-b "..."   # session in the background, named
+claude agents                    # dashboard of background sessions
+claude attach feature-b          # open one; Ctrl+Z returns to the shell, it keeps running
+claude logs|stop|respawn|rm <id|name>
+```
+`--tmux` (with `-w`) puts the worktree session in tmux. Run 2-3 at a time; the limit is how much you can review.
+Before the first run in a repo:
+- Gitignored files (`.env`) don't exist in a fresh worktree; copy what the task needs, and install dependencies.
+- Compose stacks that publish fixed host ports can't run in two worktrees at once; parameterize the ports or run that stack in one worktree only.
+- Give each agent a task that touches different files, and read each diff before merging.
+
 ## Keeping it good
 - Corrections are captured automatically; run `/reflect` to promote the durable ones (human-approved, with an enforcement ladder: linter → hook/permission → skill → path-scoped rule → CLAUDE.md).
 - After every model launch and every few months: `/doctor`, `/skill-doctor`, `/context`, `/reflect --prune`, `claude plugin validate ~/.claude/agents`, and the hook tests. Delete instructions the current model no longer needs.
