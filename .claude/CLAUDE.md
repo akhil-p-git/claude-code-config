@@ -6,11 +6,13 @@ Repo: github.com/akhil-p-git/claude-code-config (PUBLIC), checked out at ~/work/
 Layout and budgets
 - This file: facts, gotchas, and behavior Claude can't infer. Budget < 100 visible lines.
 - rules/*.md without `paths:` load every session and cost the same as this file: storage, research, writing only.
-  This file's visible text + those three ≈ 13 KB loaded (13.2 KB on 2026-10-08): adding a line means cutting one.
+  This file's visible text + those three ≈ 13 KB loaded (12.8 KB on 2026-10-26): adding a line means cutting one.
   Everything else is path-scoped (loads when a matching file is read/edited).
 - skills/<name>/SKILL.md: procedures and domain playbooks, loaded on demand. Side-effect workflows (deploy, release,
   commit, pr) set `disable-model-invocation: true` (zero listing cost, still /name). Hubs (marketing, product, finance)
   keep one listing entry and route to references/*.md. Don't name a personal skill `verify` (shadows project verify skills).
+  "Where to look" lists only what the listing can't route: /deploy and /release (hidden by disable-model-invocation) and
+  the finance guardrails. Every other skill routes by its description; re-add a pointer only if one stops triggering.
 - agents/*.md: ~20 well-scoped subagents with "Use when … / Not for … (use X)" descriptions; read-only ones are
   backstopped by hooks/readonly-bash-guard.sh and agent-write-guard.sh (tests in hooks/tests/).
 - hooks/ + settings.json: anything that must hold every time. "Every time X" / "never X" → hook or permission, not prose.
@@ -77,11 +79,8 @@ When instructions conflict, resolve them in this order and say which way you wen
 - When agents edit in parallel, grep-verify each claimed edit landed before committing.
 
 ## Where to look
-- Deploys → `/deploy`; releases → `/release`; anything broken in production, rollbacks, postmortems, alerting → `incident` skill.
-- Marketing, copy, SEO/AI search, launches, email, pricing → `marketing` skill. PRDs, user interviews, tracking plans → `product` skill.
+- Deploys → `/deploy`; releases → `/release`.
 - Finance, valuation, backtests, portfolios, SEC filings → `finance` skill (+ `backtest-auditor` before trusting results); never present analysis as investment advice.
-- Repo docs (README, ADRs, guides) → `tech-docs`; UI polish and design systems → `ui-craft`.
-- A second opinion from another model → `ask-model`. Factual claims and citations → ~/.claude/rules/research.md.
 
 ## Communication
 End substantial work with three short headings, omitting empty ones: **Blocked on me**, **Changed**, **Found**.
