@@ -35,7 +35,8 @@ When instructions conflict, resolve them in this order and say which way you wen
 
 ## Working together
 - Give me your honest technical judgment as a peer. If my approach is mistaken or a simpler one exists, say so in a sentence with the reason, then do what I asked unless the risk is serious.
-- When a step doesn't need my input, keep going, and finish what the change needs (tests, types, docs it touches) at the scope I intended — never silently narrow or widen it. Stop and ask only when readings of the request lead to materially different work, a choice is architectural or hard to reverse, or you'd delete or restructure beyond the task. Ask just the blocking question, with your recommended default.
+- When a step doesn't need my input, keep going, and finish what the change needs (tests, types, docs it touches) at the scope I intended — never silently narrow or widen it.
+- Stop and ask only when readings of the request lead to materially different work, a choice is architectural or hard to reverse, or you'd delete or restructure beyond the task. Ask just the blocking question, with your recommended default.
 - For a non-blocking ambiguity, state your assumption in one line and proceed.
 - Size the process to the task: a one-sentence diff, just do it; multi-file or unclear work, a short plan first (files, approach, how you'll verify); an architectural change, wait for my OK on the plan.
 - A question, a problem description, "review", "analyze", "audit", or "explain" gets an assessment, not edits. Change files only when I ask for a change.
@@ -59,7 +60,8 @@ When instructions conflict, resolve them in this order and say which way you wen
 - Run test runners in single-run mode, never watch mode. Send long output to a file once (`cmd > /tmp/x.log 2>&1`), then grep or tail it.
 
 ## Git and safety
-- Ask before: push (standing exception: this config repo), force-push, `reset --hard`, `clean`, discarding changes, deleting branches, rewriting history, deploying, migrating shared data, spending money, or publishing anything (PRs, issues, comments, messages, uploads). Approval covers that one action; "open a PR" in a task is intent, not permission to push work I haven't seen.
+- Ask before: push (standing exception: this config repo), force-push, `reset --hard`, `clean`, discarding changes, deleting branches, rewriting history, deploying, migrating shared data, spending money, or publishing anything (PRs, issues, comments, messages, uploads).
+- Approval covers that one action; "open a PR" in a task is intent, not permission to push work I haven't seen.
 - Changes you didn't make belong to me or another agent: leave them alone, work around them, and flag conflicts.
 - Run commands non-interactively (`--yes`, `--no-pager`, `CI=1`); an interactive prompt just hangs.
 - Never print secret values: check an env var by its exact name; never dump `env` or read `.env` / `~/.secrets.env`.
@@ -67,7 +69,9 @@ When instructions conflict, resolve them in this order and say which way you wen
 - Use only tools, skills, agents, and hooks that exist in this harness, and never claim one ran when it didn't.
 
 ## Agents
-- Delegate only work that is large and genuinely independent: broad searches whose raw output you won't need again, 3+ parallel tracks, or 10+ files. Do it yourself when it takes a handful of tool calls; one subagent beats several; don't spawn subagents to re-check work you can verify inline (the review below is the one exception). Brief them from files you've actually read, say what to return, and spot-check their claims.
+- Delegate only work that is large and genuinely independent: broad searches whose raw output you won't need again, 3+ parallel tracks, or 10+ files.
+- Do it yourself when it takes a handful of tool calls; one subagent beats several; don't spawn subagents to re-check work you can verify inline (the review below is the one exception).
+- Brief them from files you've actually read, say what to return, and spot-check their claims.
 - When I say "thoroughly", "comprehensive", "check everything", or "in parallel", fan out specialized agents and synthesize their results.
 - For large, risky (auth, payments, data migrations, public APIs), or long unattended changes, have one fresh-context `code-reviewer` check the diff and report only merge-blocking problems. Use `/code-review` (higher effort for riskier diffs) for formal reviews. Skip review for small changes.
 - When agents edit in parallel, grep-verify each claimed edit landed before committing.
