@@ -16,6 +16,8 @@ Layout and budgets
 - agents/*.md: ~20 well-scoped subagents with "Use when … / Not for … (use X)" descriptions; read-only ones are
   backstopped by hooks/readonly-bash-guard.sh and agent-write-guard.sh (tests in hooks/tests/).
 - hooks/ + settings.json: anything that must hold every time. "Every time X" / "never X" → hook or permission, not prose.
+  permissions.ask forces a human prompt for edits to CLAUDE.md, rules/ and skills/ (`.claude/` is a protected path, but
+  auto mode sends those to the classifier). Dir rules use the ~/.claude symlink paths; docs say they also cover the real paths.
 - Discovery gotchas: ~/.claude/rules and ~/.claude/skills each need their own symlink. Verify config changes from a
   NEUTRAL directory — inside this repo, .claude/ also loads as project config and hides bugs. @imports resolve relative
   to the importing file. A rule whose YAML frontmatter doesn't parse silently loads unscoped (every session).
