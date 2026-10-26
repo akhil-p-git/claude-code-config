@@ -33,7 +33,7 @@ For a full-stack app with separate frontend and backend, use the user's layout: 
 - Add a short project `CLAUDE.md` (under ~30 lines): the exact install, dev, build, lint, typecheck, and single-test commands with their quiet flags, plus any non-obvious gotcha. Commands Claude doesn't have to infer are the highest-value lines a project file can hold; don't restate general conventions.
 
 ## 5. Initialize git
-- `git init` so the project gets its OWN repo — do NOT rely on the $HOME repo (confirm `git rev-parse --show-toplevel` points at the new project).
+- `git init` so the project gets its own repo, then confirm `git rev-parse --show-toplevel` points at the new project.
 - First commit with Conventional Commits: `chore: initial project scaffold`.
 - Do NOT add a remote or push unless asked.
 
