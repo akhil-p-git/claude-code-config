@@ -78,6 +78,6 @@ Before the first run in a repo:
 
 ## Keeping it good
 - Corrections are captured automatically; run `/reflect` to promote the durable ones (human-approved, with an enforcement ladder: linter → hook/permission → skill → path-scoped rule → CLAUDE.md).
-- After every model launch and every few months: `/doctor`, `/skill-doctor`, `/context`, `/reflect --prune`, `claude plugin validate ~/.claude/agents`, and the hook tests. Delete instructions the current model no longer needs.
+- After every model launch and every few months: `/doctor prompt-audit`, `/skill-doctor`, `/context`, `/reflect --prune`, `claude plugin validate ~/.claude/agents`, and the hook tests. Delete instructions the current model no longer needs.
 - `.claude/skills/synced/` (account-synced, partly proprietary) and hook test fixtures are gitignored; this repo is public.
 - MCP notes: [MCP.md](MCP.md). API keys for `ask-model`: see [.env.example](.env.example) (real values go in `~/.secrets.env`).

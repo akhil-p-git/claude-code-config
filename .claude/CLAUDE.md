@@ -22,7 +22,8 @@ Layout and budgets
 
 Bar for adding a line here (see /reflect): non-obvious, seen more than once or once at real cost, specific, not
 enforceable by a tool/hook/permission, and still needed by the current model. Record date + incident in the commit.
-Re-audit after every model launch: /doctor, /skill-doctor, /context, `claude plugin validate ~/.claude/agents`.
+Re-audit after every model launch: `/doctor prompt-audit` (v2.1.283+; flags wording written for older models, dead
+references, contradictions), /skill-doctor, /context, `claude plugin validate ~/.claude/agents`.
 -->
 
 # Global Instructions
