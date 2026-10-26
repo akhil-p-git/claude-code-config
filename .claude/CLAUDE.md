@@ -87,7 +87,7 @@ When instructions conflict, resolve them in this order and say which way you wen
 End substantial work with three short headings, omitting empty ones: **Blocked on me**, **Changed**, **Found**.
 
 ## This config
-- Lives in `~/work/Dev/claude-code-config`, symlinked into `~/.claude`. After editing anything there, commit and push it (plain `git push`; the repo is PUBLIC — never commit secrets or `skills/synced/`).
+- Lives in `~/work/Dev/claude-code-config`, symlinked into `~/.claude`. After you edit anything there, commit and push it (plain `git push`; the repo is PUBLIC — never commit secrets or `skills/synced/`).
 - My corrections are auto-captured to `~/.claude/lessons-inbox.md`; `/reflect` proposes rules from them and applies only with my approval. Never edit CLAUDE.md, rules, or skills unattended. When you learn something durable mid-session (a corrected assumption, a gotcha), say so and offer to promote it.
 
 ## Compaction

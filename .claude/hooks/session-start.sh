@@ -4,10 +4,12 @@
 #   2. UNCOMMITTED / UNPUSHED changes in the config repo itself
 #   3. the current git branch
 #
-# (2) exists because CLAUDE.md says "whenever you change any config file here,
-# commit and push it" — and the failure mode of that rule is silent: an edit made
-# late in a session simply never gets pushed and is lost on the next machine.
-# Announcing the drift at startup makes it self-correcting.
+# (2) exists because CLAUDE.md says "After you edit anything there, commit and
+# push it" — and the failure mode of that rule is silent: an edit made late in a
+# session simply never gets pushed and is lost on the next machine. Announcing the
+# drift at startup makes it self-correcting. The message limits the instruction to
+# the session's own edits: a new session can't tell who made the rest, and CLAUDE.md
+# says to leave changes it didn't make alone.
 #
 # stdout is injected into the session context. ALWAYS exits 0. Must stay fast:
 # no network calls, and git work is confined to the local object store.
@@ -32,7 +34,7 @@ if [ -d "$CONFIG_REPO/.git" ]; then
   dirty="$(git -C "$CONFIG_REPO" status --porcelain 2>/dev/null | head -12)"
   if [ -n "$dirty" ]; then
     c="$(printf '%s\n' "$dirty" | grep -c .)"
-    echo "⚠️  claude-code-config has ${c} uncommitted change(s) — commit & push (CLAUDE.md rule):"
+    echo "⚠️  claude-code-config has ${c} uncommitted change(s). Commit & push only your own edits (CLAUDE.md rule); for anything else, show the user and ask (the repo is PUBLIC):"
     printf '%s\n' "$dirty" | sed 's/^/     /'
   fi
   # Unpushed commits: compare against the recorded upstream only. No fetch —
