@@ -284,31 +284,7 @@
     "security-guidance@claude-plugins-official": true,
     "context7@claude-plugins-official": true,
     "clangd-lsp@claude-plugins-official": true,
-    "rust-analyzer-lsp@claude-plugins-official": true,
-    "godot-prompter@godot-prompter-marketplace": true,
-    "godot@skills": true,
-    "godot@awesome-gamedev-agent-skills": true,
-    "router@awesome-gamedev-agent-skills": true
-  },
-  "extraKnownMarketplaces": {
-    "godot-prompter-marketplace": {
-      "source": {
-        "source": "github",
-        "repo": "jame581/GodotPrompter"
-      }
-    },
-    "skills": {
-      "source": {
-        "source": "github",
-        "repo": "randroids-dojo/skills"
-      }
-    },
-    "awesome-gamedev-agent-skills": {
-      "source": {
-        "source": "github",
-        "repo": "gamedev-skills/awesome-gamedev-agent-skills"
-      }
-    }
+    "rust-analyzer-lsp@claude-plugins-official": true
   },
   "sandbox": {
     "enabled": false,
@@ -327,7 +303,10 @@
       "effortLevel": "medium"
     },
     "claude-sonnet-5-5": {
-      "effortLevel": "high"
+      "effortLevel": "medium"
+    },
+    "claude-haiku-5-5": {
+      "effortLevel": "low"
     }
   },
   "tui": "fullscreen",
