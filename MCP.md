@@ -39,6 +39,19 @@ claude mcp remove <name>
 
 Add `-s user` for all projects, or run inside a project for project scope.
 
+## Servers on my machines (checked 2026-10-31 with `claude mcp list`)
+
+| Server | Where it comes from | Set up by |
+| --- | --- | --- |
+| claude.ai Gmail, Google Drive, Google Calendar, Claude Docs | The claude.ai account: they appear in any Claude Code logged in to it | Nothing to run; `/login` |
+| `vercel`, `context7` | Plugins enabled in `settings.json` | `setup-claude.sh` installs the plugins |
+| `godot-mcp` ([PiMPStudios/Claude-GoDot-MCP](https://github.com/PiMPStudios/Claude-GoDot-MCP) at `cdaf821`) | Third-party, user scope; needs the Godot editor with the GDAI addon open | `setup-mcp.sh` |
+| `game-asset-finder` ([sudoriaa/game-asset-finder-mcp](https://github.com/sudoriaa/game-asset-finder-mcp) at `f5efb9f`) | Third-party, user scope | `setup-mcp.sh` |
+
+`setup-mcp.sh` clones the two third-party servers into `~/work/Dev/tools` at the commits that were reviewed, builds them (`uv sync`, `npm ci && npm run build`), and registers them with `claude mcp add -s user`. It is idempotent, leaves an existing registration alone, and refuses to move a checkout that has local changes. Bump a pinned commit only after reading the diff: these servers run with your user's permissions.
+
+Not synced by this repo: `~/.claude/settings.local.json`, the per-machine list of "always allow" permission rules (path-specific, and it grows from your own approvals). On a new machine, `/fewer-permission-prompts` rebuilds a list from that machine's transcripts.
+
 ## What to use instead
 
 **Prefer a CLI over an MCP server where one exists.** Anthropic's guidance is that

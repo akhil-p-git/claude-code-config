@@ -57,6 +57,8 @@ git clone https://github.com/akhil-p-git/claude-code-config ~/work/Dev/claude-co
 ~/work/Dev/claude-code-config/setup-claude.sh
 cd ~/work/Dev/claude-code-config && bash .claude/hooks/tests/run-all.sh && bash .claude/hooks/tests/test-agent-guards.sh
 ```
+Then `~/work/Dev/claude-code-config/setup-mcp.sh` registers the two local MCP servers (see `MCP.md`; needs `uv` and Node 20.18.1+, and only matters if you use Godot or the asset finder there). Log in with the same claude.ai account (`/login`) to get the Gmail, Drive, Calendar and Docs connectors and your synced skills.
+
 Keep the clone at `~/work/Dev/claude-code-config`: `settings.json` refers to the hooks as `$HOME/work/Dev/claude-code-config/...`. `.claude/machines/macos.md` starts as a stub; the first session there offers to fill it in from the machine. Not carried over: the desktop notification hook (needs `notify-send`, so it does nothing on a Mac), `/title` (Konsole only), `~/.secrets.env`, auto-memory, and the `gh` login. The hooks were made portable (no `mapfile`, `stat -c`, `realpath -m`, `timeout` or GNU `\b` assumptions) but the test suite has only been run on Linux so far.
 
 Requirements: `jq`, `git`, `gh` (authenticated via `gh auth login`; never export `GITHUB_TOKEN`), Python 3, Node via fnm. Optional: `gitleaks`, `shellcheck`, language servers for the LSP plugins.
