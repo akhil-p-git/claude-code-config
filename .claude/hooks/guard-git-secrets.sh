@@ -25,9 +25,9 @@ while IFS= read -r seg; do
     seg="$(printf '%s' "$seg" | sed -E 's/^[A-Za-z_][A-Za-z0-9_]*=[^[:space:]]*[[:space:]]+//')"
   done
   printf '%s' "$seg" | grep -qE '^git[[:space:]]+(-[Cc][[:space:]]+[^[:space:]]+[[:space:]]+|-[^[:space:]]+[[:space:]]+)*(add|stage)\b' || continue
-  args="$(printf '%s' "$seg" | sed -E 's/^git[[:space:]]+(-[Cc][[:space:]]+[^[:space:]]+[[:space:]]+|-[^[:space:]]+[[:space:]]+)*(add|stage)\b//')"
+  args="$(printf '%s' "$seg" | sed -E 's/^git[[:space:]]+(-[Cc][[:space:]]+[^[:space:]]+[[:space:]]+|-[^[:space:]]+[[:space:]]+)*(add|stage)([[:space:]]|$)/ /')"
   gdir="$(printf '%s' "$seg" | sed -nE 's/^git[[:space:]]+(.*[[:space:]])?-C[[:space:]]+([^[:space:]]+)[[:space:]].*/\2/p')"
-  scrub="$(printf '%s' "$args" | sed -E 's#[^[:space:]]*\.env\.(example|sample|template|dist)\b##g')"
+  scrub="$(printf '%s' "$args" | sed -E 's#[^[:space:]]*\.env\.(example|sample|template|dist)([[:space:]]|$)# #g')"
 
   if    printf '%s' "$scrub" | grep -qiE '(^|[[:space:]])[^[:space:]]*\.env(\.[[:alnum:]_-]+)*([[:space:]]|$)' \
      || printf '%s' "$scrub" | grep -qiE '\.(key|pem|p12|pfx|keystore)([[:space:]]|$)' \

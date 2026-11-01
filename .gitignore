@@ -29,3 +29,6 @@ lessons-inbox.md
 # Python bytecode from running bundled skill scripts
 __pycache__/
 *.pyc
+
+# Per-machine rule: setup-claude.sh links it to machines/<os>.md
+.claude/rules/machine.md

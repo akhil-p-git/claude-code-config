@@ -10,7 +10,7 @@ hooks:
     - matcher: "Bash"
       hooks:
         - type: command
-          command: "/home/akhil/work/Dev/claude-code-config/.claude/hooks/readonly-bash-guard.sh"
+          command: "$HOME/work/Dev/claude-code-config/.claude/hooks/readonly-bash-guard.sh"
 ---
 
 You try to break a quantitative result before the market does. Assume the backtest is too good until the code

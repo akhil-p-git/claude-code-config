@@ -11,7 +11,7 @@
 #       - matcher: "Bash"
 #         hooks:
 #           - type: command
-#             command: "/home/akhil/work/Dev/claude-code-config/.claude/hooks/readonly-bash-guard.sh"
+#             command: "$HOME/work/Dev/claude-code-config/.claude/hooks/readonly-bash-guard.sh"
 # Tests: test-guards.sh (exit 2 = blocked, 0 = allowed).
 set -uo pipefail
 
@@ -90,7 +90,7 @@ tmp_targets_only() {
   fi
   [ ${#args[@]} -ge 1 ] || return 1
   case $cmdw in
-    cp|ln|install) [[ ${args[-1]} =~ $TMP ]] ;;
+    cp|ln|install) [[ ${args[${#args[@]}-1]} =~ $TMP ]] ;;
     dd)
       for t in "${args[@]}"; do [[ $t == of=* ]] && { [[ ${t#of=} =~ $TMP ]]; return; }; done
       return 1 ;;

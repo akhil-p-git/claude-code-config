@@ -12,6 +12,9 @@
 # additionalContext (non-blocking). Success is silent. Disable with CLAUDE_NO_FORMAT=1.
 
 [ "${CLAUDE_NO_FORMAT:-0}" = "1" ] && exit 0
+
+# macOS has no `timeout`; coreutils installs it as `gtimeout`. Without either, run unbounded.
+tmo() { if command -v timeout >/dev/null 2>&1; then timeout "$@"; elif command -v gtimeout >/dev/null 2>&1; then gtimeout "$@"; else shift; "$@"; fi; }
 input="$(cat)"
 fp="$(jq -r '.tool_input.file_path // empty' <<<"$input" 2>/dev/null)"
 [ -n "$fp" ] && [ -f "$fp" ] || exit 0
@@ -43,27 +46,27 @@ case "${fp##*.}" in
     root="$(find_up package.json)" || exit 0
     if bin="$(find_bin biome)" && find_up biome.json biome.jsonc >/dev/null; then
       tool=biome
-      out="$(cd "$bin" && timeout 20 node_modules/.bin/biome format --write --no-errors-on-unmatched --files-ignore-unknown=true "$fp" 2>&1)"; rc=$?
+      out="$(cd "$bin" && tmo 20 node_modules/.bin/biome format --write --no-errors-on-unmatched --files-ignore-unknown=true "$fp" 2>&1)"; rc=$?
     elif bin="$(find_bin prettier)" && { find_up .prettierrc .prettierrc.json .prettierrc.json5 .prettierrc.yaml .prettierrc.yml .prettierrc.toml .prettierrc.js .prettierrc.cjs .prettierrc.mjs .prettierrc.ts prettier.config.js prettier.config.cjs prettier.config.mjs prettier.config.ts >/dev/null \
                    || jq -e '.prettier // .devDependencies.prettier // .dependencies.prettier' "$root/package.json" "$bin/package.json" >/dev/null 2>&1; }; then
       tool=prettier
-      out="$(cd "$bin" && timeout 20 node_modules/.bin/prettier --write --log-level warn "$fp" 2>&1)"; rc=$?
+      out="$(cd "$bin" && tmo 20 node_modules/.bin/prettier --write --log-level warn "$fp" 2>&1)"; rc=$?
     fi ;;
   py|pyi)
     root="$(find_up pyproject.toml ruff.toml .ruff.toml setup.cfg)" || exit 0
     ruff=""; for c in "$root/.venv/bin/ruff" "$(command -v ruff 2>/dev/null)"; do [ -n "$c" ] && [ -x "$c" ] && { ruff="$c"; break; }; done
     if [ -x "$root/.venv/bin/black" ] && grep -qs '^\[tool\.black\]' "$root/pyproject.toml"; then
-      tool=black; out="$(cd "$root" && timeout 20 .venv/bin/black --quiet "$fp" 2>&1)"; rc=$?
+      tool=black; out="$(cd "$root" && tmo 20 .venv/bin/black --quiet "$fp" 2>&1)"; rc=$?
     elif [ -n "$ruff" ] && { [ "$ruff" = "$root/.venv/bin/ruff" ] || [ -e "$root/ruff.toml" ] || [ -e "$root/.ruff.toml" ] || grep -qs '^\[tool\.ruff' "$root/pyproject.toml"; }; then
-      tool=ruff; out="$(cd "$root" && timeout 20 "$ruff" format --quiet "$fp" 2>&1)"; rc=$?
+      tool=ruff; out="$(cd "$root" && tmo 20 "$ruff" format --quiet "$fp" 2>&1)"; rc=$?
     fi ;;
-  go) command -v gofmt >/dev/null && { tool=gofmt; out="$(timeout 20 gofmt -w "$fp" 2>&1)"; rc=$?; } ;;
+  go) command -v gofmt >/dev/null && { tool=gofmt; out="$(tmo 20 gofmt -w "$fp" 2>&1)"; rc=$?; } ;;
   rs)
     if command -v rustfmt >/dev/null; then
       ed="$(grep -hsoE '^edition[[:space:]]*=[[:space:]]*"[0-9]{4}"' "$(find_up Cargo.toml)/Cargo.toml" | grep -oE '[0-9]{4}')"
-      tool=rustfmt; out="$(timeout 20 rustfmt --edition "${ed:-2021}" "$fp" 2>&1)"; rc=$?
+      tool=rustfmt; out="$(tmo 20 rustfmt --edition "${ed:-2021}" "$fp" 2>&1)"; rc=$?
     fi ;;
-  sh|bash) command -v shfmt >/dev/null && find_up .editorconfig >/dev/null && { tool=shfmt; out="$(timeout 20 shfmt -w "$fp" 2>&1)"; rc=$?; } ;;
+  sh|bash) command -v shfmt >/dev/null && find_up .editorconfig >/dev/null && { tool=shfmt; out="$(tmo 20 shfmt -w "$fp" 2>&1)"; rc=$?; } ;;
 esac
 
 [ -z "$tool" ] || [ "$rc" -eq 0 ] && exit 0

@@ -9,7 +9,8 @@ Claude Opus 5.x already knows general engineering practice, so always-on context
 | Path | What | Loads |
 | --- | --- | --- |
 | `.claude/CLAUDE.md` | Priorities, honesty, change discipline, verification, git safety, delegation, routing index. Maintainer notes live in an HTML comment (stripped, zero tokens). | Every session |
-| `.claude/rules/{storage,research,writing}.md` | Machine facts; citation discipline; writing for people (anti-slop, commits, PRs) | Every session |
+| `.claude/rules/{git,research,writing}.md` | Git auth and secrets; citation discipline; writing for people (anti-slop, commits, PRs) | Every session |
+| `.claude/rules/machine.md` | Gitignored symlink to `.claude/machines/<os>.md` (disk layout, toolchains, sudo), made by `setup-claude.sh`: `linux-arch.md` for the author's Arch machine, `macos.md` for a Mac | Every session |
 | `.claude/rules/*.md` (others) | `python`, `javascript-typescript`, `react`, `web-frontend`, `nodejs-backend`, `java`, `dotnet`, `c`, `database`, `api-design`, `testing`, `accessibility`, `security`, `engineering`, `devops`, `data`, `finance` | When a matching file is read or edited |
 | `.claude/skills/` | See below | Description listed; body on use |
 | `.claude/agents/` | 20 subagents (see below) | Description listed; body on delegation |
@@ -47,6 +48,16 @@ git clone https://github.com/akhil-p-git/claude-code-config ~/work/Dev/claude-co
 ~/work/Dev/claude-code-config/setup-claude.sh   # symlinks CLAUDE.md, settings.json, rules, skills, agents, commands, templates; installs enabled plugins
 ```
 Each of `rules/` and `skills/` needs its own symlink — Claude Code never discovers them relative to a symlinked `CLAUDE.md`. Verify from a neutral directory (not inside this repo, where `.claude/` also loads as project config): start `claude` in `/tmp` and check `/context` or `/memory`.
+
+### macOS
+```bash
+brew install bash jq coreutils gh git     # bash 4+ for the hooks, GNU `timeout` as `gtimeout`
+gh auth login
+git clone https://github.com/akhil-p-git/claude-code-config ~/work/Dev/claude-code-config
+~/work/Dev/claude-code-config/setup-claude.sh
+cd ~/work/Dev/claude-code-config && bash .claude/hooks/tests/run-all.sh && bash .claude/hooks/tests/test-agent-guards.sh
+```
+Keep the clone at `~/work/Dev/claude-code-config`: `settings.json` refers to the hooks as `$HOME/work/Dev/claude-code-config/...`. `.claude/machines/macos.md` starts as a stub; the first session there offers to fill it in from the machine. Not carried over: the desktop notification hook (needs `notify-send`, so it does nothing on a Mac), `/title` (Konsole only), `~/.secrets.env`, auto-memory, and the `gh` login. The hooks were made portable (no `mapfile`, `stat -c`, `realpath -m`, `timeout` or GNU `\b` assumptions) but the test suite has only been run on Linux so far.
 
 Requirements: `jq`, `git`, `gh` (authenticated via `gh auth login`; never export `GITHUB_TOKEN`), Python 3, Node via fnm. Optional: `gitleaks`, `shellcheck`, language servers for the LSP plugins.
 

@@ -32,7 +32,7 @@ left() {  # seconds until epoch $1 as 2h05m / 3d4h
 
 # ---- git (cached) ----
 cache="${XDG_RUNTIME_DIR:-/tmp}/claude-statusline-$sid"
-if [ ! -f "$cache" ] || [ $(( $(date +%s) - $(stat -c %Y "$cache" 2>/dev/null || echo 0) )) -gt 5 ]; then
+if [ ! -f "$cache" ] || [ $(( $(date +%s) - $(stat -c %Y "$cache" 2>/dev/null || stat -f %m "$cache" 2>/dev/null || echo 0) )) -gt 5 ]; then
   b="$(git -C "$dir" --no-optional-locks symbolic-ref --short -q HEAD 2>/dev/null || git -C "$dir" --no-optional-locks rev-parse --short HEAD 2>/dev/null)"
   d=""; [ -n "$b" ] && [ -n "$(git -C "$dir" --no-optional-locks status --porcelain --untracked-files=no 2>/dev/null | head -1)" ] && d="*"
   printf '%s\x1f%s\n' "$b" "$d" > "$cache" 2>/dev/null

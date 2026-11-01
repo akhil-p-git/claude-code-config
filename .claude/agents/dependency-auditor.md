@@ -11,7 +11,7 @@ hooks:
     - matcher: "Bash"
       hooks:
         - type: command
-          command: "/home/akhil/work/Dev/claude-code-config/.claude/hooks/readonly-bash-guard.sh"
+          command: "$HOME/work/Dev/claude-code-config/.claude/hooks/readonly-bash-guard.sh"
 ---
 
 You tell the user what their dependencies expose them to, and exactly what an upgrade will break in this codebase. Nothing generic.

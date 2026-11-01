@@ -13,7 +13,7 @@ while IFS= read -r line; do
   [ -z "$line" ] && continue
   expect="$(jq -r .expect <<<"$line")"
   cwd="$(jq -r .cwd <<<"$line" | sed -e "s#@FX#$fx#g" -e "s#@APP#$HOME/work/Dev/app#g")"
-  cmd="$(jq -r .cmd <<<"$line" | sed -e "s#@FX#$fx#g")"
+  cmd="$(jq -r .cmd <<<"$line" | sed -e "s#@FX#$fx#g" -e "s#@HOME#$HOME#g")"
   payload="$(jq -cn --arg c "$cmd" --arg cwd "$cwd" '{session_id:"test",cwd:$cwd,permission_mode:"auto",hook_event_name:"PreToolUse",tool_name:"Bash",tool_input:{command:$c,description:"t"},tool_use_id:"toolu_test"}')"
   t0=$(date +%s%N)
   out="$(printf '%s' "$payload" | "$hook")"; rc=$?

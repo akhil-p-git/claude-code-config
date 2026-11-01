@@ -5,8 +5,8 @@ Repo: github.com/akhil-p-git/claude-code-config (PUBLIC), checked out at ~/work/
 
 Layout and budgets
 - This file: facts, gotchas, and behavior Claude can't infer. Budget < 100 visible lines.
-- rules/*.md without `paths:` load every session and cost the same as this file: storage, research, writing only.
-  This file's visible text + those three ≈ 13 KB loaded (12.8 KB on 2026-10-26): adding a line means cutting one.
+- rules/*.md without `paths:` load every session and cost the same as this file: machine (a symlink to machines/<os>.md, made by setup-claude.sh), git, research, writing only.
+  This file's visible text + those four ≈ 13 KB loaded (12.9 KB on Linux, 12.1 KB on macOS, 2026-10-31): adding a line means cutting one.
   Everything else is path-scoped (loads when a matching file is read/edited).
 - skills/<name>/SKILL.md: procedures and domain playbooks, loaded on demand. Side-effect workflows (deploy, release,
   commit, pr) set `disable-model-invocation: true` (zero listing cost, still /name). Hubs (marketing, product, finance)

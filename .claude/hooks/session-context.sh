@@ -35,7 +35,7 @@ fi
 st="${XDG_RUNTIME_DIR:-/tmp}/claude-verify/$sid"
 if [ -n "$sid" ] && [ -s "$st/log" ]; then
   IFS=$'\t' read -r ts res c < <(tail -1 "$st/log")
-  printf -- '- Last recorded check: `%s` %s at %s\n' "${c:0:200}" "$([ "$res" = ok ] && echo passed || echo FAILED)" "$(date -d "@$ts" '+%H:%M' 2>/dev/null)"
+  printf -- '- Last recorded check: `%s` %s at %s\n' "${c:0:200}" "$([ "$res" = ok ] && echo passed || echo FAILED)" "$(date -d "@$ts" '+%H:%M' 2>/dev/null || date -r "$ts" '+%H:%M' 2>/dev/null)"
 fi
 
 inbox="$HOME/.claude/lessons-inbox.md"

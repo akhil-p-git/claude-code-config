@@ -31,13 +31,17 @@ top="$(G "$cwd" rev-parse --show-toplevel)" || exit 0
 [ -n "$top" ] && [ "$top" != "$HOME" ] || exit 0
 
 src='\.(ts|tsx|js|jsx|mjs|cjs|mts|cts|py|go|rs|c|h|cc|cpp|hpp|java|kt|rb|php|cs|swift|scala|sh|bash|sql|vue|svelte|astro)$'
-mapfile -t files < <(G "$top" status --porcelain --untracked-files=all | grep -vE '^(D.|.D) ' \
+files=(); while IFS= read -r _f; do files+=("$_f"); done < <(G "$top" status --porcelain --untracked-files=all | grep -vE '^(D.|.D) ' \
   | sed -E 's/^.. //; s/^.* -> //; s/^"(.*)"$/\1/' | grep -E "$src" | head -300)
 [ "${#files[@]}" -gt 0 ] || exit 0
 
 state="${XDG_RUNTIME_DIR:-/tmp}/claude-verify/$sid"
-mt() { local t; t="$(stat -c %.9Y "$1" 2>/dev/null)"; t="${t/./}"; echo "${t:-0}"; }   # mtime in ns
-start=0; [ -n "$tpath" ] && start="$(stat -c %W "$tpath" 2>/dev/null)"; [[ "$start" =~ ^[0-9]+$ ]] && start="${start}000000000" || start=0
+mt() {   # mtime in ns: GNU stat has fractional seconds, BSD (macOS) stat only whole seconds
+  local t; t="$(stat -c %.9Y "$1" 2>/dev/null)"
+  if [ -n "$t" ]; then t="${t/./}"; else t="$(stat -f %m "$1" 2>/dev/null)"; [ -n "$t" ] && t="${t}000000000"; fi
+  echo "${t:-0}"
+}
+start=0; [ -n "$tpath" ] && start="$(stat -c %W "$tpath" 2>/dev/null || stat -f %B "$tpath" 2>/dev/null)"; [[ "$start" =~ ^[0-9]+$ ]] && start="${start}000000000" || start=0
 newest=0; changed=()
 for f in "${files[@]}"; do
   t="$(mt "$top/$f")"

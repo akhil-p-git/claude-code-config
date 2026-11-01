@@ -7,7 +7,7 @@ g="$here/../guard-prod-actions.sh"
 fail=0; n=0
 
 case_() { # expect(allow|ask|deny) command [cwd]
-  local expect=$1 cmd=$2 cwd=${3:-/home/akhil/work/Dev/x} json out rc got
+  local expect=$1 cmd=$2 cwd=${3:-$HOME/work/Dev/x} json out rc got
   json=$(jq -n --arg c "$cmd" --arg d "$cwd" '{tool_name:"Bash",tool_input:{command:$c},cwd:$d}')
   out=$(bash "$g" <<<"$json" 2>/dev/null); rc=$?
   if [ $rc -eq 2 ]; then got=deny
@@ -19,16 +19,16 @@ case_() { # expect(allow|ask|deny) command [cwd]
 }
 
 # --- config-repo push exemption via cd / -C (added on install)
-case_ allow 'git push' /home/akhil/work/Dev/claude-code-config
-case_ allow 'git -C ~/work/Dev/claude-code-config push' /home/akhil
-case_ allow 'git -C /home/akhil/work/Dev/claude-code-config push origin master' /home/akhil
-case_ allow 'cd ~/work/Dev/claude-code-config && git push' /home/akhil
-case_ allow 'cd ~/work/Dev/claude-code-config && git add -A && git commit -q -F /tmp/m.txt && git push 2>&1 | tail -3' /home/akhil
-case_ ask   'cd ~/work/Dev/claude-code-config && git push --force' /home/akhil
-case_ ask   'git -C ~/work/Dev/claude-code-config push --tags' /home/akhil
-case_ ask   'cd ~/work/Dev/x && git push' /home/akhil/work/Dev/claude-code-config
-case_ ask   'git -C /tmp push' /home/akhil/work/Dev/claude-code-config
-case_ ask   'cd "$HOME/work/Dev/claude-code-config" && git push' /home/akhil
+case_ allow 'git push' "$HOME/work/Dev/claude-code-config"
+case_ allow 'git -C ~/work/Dev/claude-code-config push' "$HOME"
+case_ allow "git -C $HOME/work/Dev/claude-code-config push origin master" "$HOME"
+case_ allow 'cd ~/work/Dev/claude-code-config && git push' "$HOME"
+case_ allow 'cd ~/work/Dev/claude-code-config && git add -A && git commit -q -F /tmp/m.txt && git push 2>&1 | tail -3' "$HOME"
+case_ ask   'cd ~/work/Dev/claude-code-config && git push --force' "$HOME"
+case_ ask   'git -C ~/work/Dev/claude-code-config push --tags' "$HOME"
+case_ ask   'cd ~/work/Dev/x && git push' "$HOME/work/Dev/claude-code-config"
+case_ ask   'git -C /tmp push' "$HOME/work/Dev/claude-code-config"
+case_ ask   'cd "$HOME/work/Dev/claude-code-config" && git push' "$HOME"
 
 # --- must stay silent (normal permission flow)
 case_ allow 'vercel deploy'

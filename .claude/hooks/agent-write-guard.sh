@@ -10,7 +10,7 @@
 #       - matcher: "Write|Edit|NotebookEdit"
 #         hooks:
 #           - type: command
-#             command: "/home/akhil/work/Dev/claude-code-config/.claude/hooks/agent-write-guard.sh <agent-name>"
+#             command: "$HOME/work/Dev/claude-code-config/.claude/hooks/agent-write-guard.sh <agent-name>"
 set -uo pipefail
 
 agent="${1:-}"
@@ -26,13 +26,19 @@ if [ -z "$agent" ]; then
 fi
 
 case "$path" in /*) ;; *) path="$cwd/$path" ;; esac
-real=$(realpath -m -- "$path")
+# GNU `realpath -m` does not exist on macOS; python3's realpath also resolves paths that do not exist.
+rp() { realpath -m -- "$1" 2>/dev/null || python3 -c 'import os,sys; print(os.path.realpath(sys.argv[1]))' "$1" 2>/dev/null; }
+real=$(rp "$path")
+if [ -z "$real" ]; then
+  echo "agent-write-guard: cannot resolve '$path' (needs GNU realpath or python3)" >&2
+  exit 2
+fi
 
 for allowed in "$HOME/.claude/agent-memory/$agent" \
                "$cwd/.claude/agent-memory/$agent" \
                "$cwd/.claude/agent-memory-local/$agent" \
                "/tmp" "${TMPDIR:-/tmp}"; do
-  base=$(realpath -m -- "$allowed")
+  base=$(rp "$allowed"); [ -n "$base" ] || continue
   case "$real/" in "$base"/*) exit 0 ;; esac
 done
 

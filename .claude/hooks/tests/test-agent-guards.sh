@@ -10,7 +10,7 @@ fail=0; n=0
 
 bash_case() { # expect(allow|block) command
   local expect=$1 cmd=$2 json rc got
-  json=$(jq -n --arg c "$cmd" '{tool_name:"Bash",tool_input:{command:$c},cwd:"/home/akhil/work/Dev/x"}')
+  json=$(jq -n --arg c "$cmd" --arg d "$HOME/work/Dev/x" '{tool_name:"Bash",tool_input:{command:$c},cwd:$d}')
   bash "$bg" <<<"$json" >/dev/null 2>&1; rc=$?
   if [ $rc -eq 0 ]; then got=allow; elif [ $rc -eq 2 ]; then got=block; else got="rc=$rc"; fi
   n=$((n+1))
@@ -19,7 +19,7 @@ bash_case() { # expect(allow|block) command
 
 write_case() { # expect agent path
   local expect=$1 agent=$2 path=$3 json rc got
-  json=$(jq -n --arg p "$path" '{tool_name:"Write",tool_input:{file_path:$p,content:"x"},cwd:"/home/akhil/work/Dev/proj"}')
+  json=$(jq -n --arg p "$path" --arg d "$HOME/work/Dev/proj" '{tool_name:"Write",tool_input:{file_path:$p,content:"x"},cwd:$d}')
   bash "$wg" "$agent" <<<"$json" >/dev/null 2>&1; rc=$?
   if [ $rc -eq 0 ]; then got=allow; elif [ $rc -eq 2 ]; then got=block; else got="rc=$rc"; fi
   n=$((n+1))
@@ -215,12 +215,12 @@ bash_case block 'uv run --no-sync python x.py'
 # ---------- write guard (memory agents)
 write_case allow code-reviewer "$HOME/.claude/agent-memory/code-reviewer/MEMORY.md"
 write_case allow code-reviewer "$HOME/.claude/agent-memory/code-reviewer/project_x.md"
-write_case allow code-reviewer "/home/akhil/work/Dev/proj/.claude/agent-memory/code-reviewer/notes.md"
-write_case allow code-reviewer "/home/akhil/work/Dev/proj/.claude/agent-memory-local/code-reviewer/notes.md"
+write_case allow code-reviewer "$HOME/work/Dev/proj/.claude/agent-memory/code-reviewer/notes.md"
+write_case allow code-reviewer "$HOME/work/Dev/proj/.claude/agent-memory-local/code-reviewer/notes.md"
 write_case allow code-reviewer "/tmp/review-scratch.py"
 write_case block code-reviewer "$HOME/.claude/agent-memory/architect/MEMORY.md"
 write_case block code-reviewer "$HOME/.claude/agent-memory/code-reviewer/../../settings.json"
-write_case block code-reviewer "/home/akhil/work/Dev/proj/src/index.ts"
+write_case block code-reviewer "$HOME/work/Dev/proj/src/index.ts"
 write_case block code-reviewer "src/index.ts"
 write_case block code-reviewer "/tmpevil/x"
 write_case block ""            "/tmp/x"

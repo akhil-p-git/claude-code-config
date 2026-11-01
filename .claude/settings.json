@@ -112,24 +112,24 @@
         "hooks": [
           {
             "type": "command",
-            "command": "/home/akhil/work/Dev/claude-code-config/.claude/hooks/guard-destructive.sh",
+            "command": "$HOME/work/Dev/claude-code-config/.claude/hooks/guard-destructive.sh",
             "timeout": 10,
             "onFailure": "block"
           },
           {
             "type": "command",
-            "command": "/home/akhil/work/Dev/claude-code-config/.claude/hooks/guard-prod-actions.sh",
+            "command": "$HOME/work/Dev/claude-code-config/.claude/hooks/guard-prod-actions.sh",
             "timeout": 10
           },
           {
             "type": "command",
-            "command": "/home/akhil/work/Dev/claude-code-config/.claude/hooks/guard-git-secrets.sh",
+            "command": "$HOME/work/Dev/claude-code-config/.claude/hooks/guard-git-secrets.sh",
             "if": "Bash(git *)",
             "timeout": 10
           },
           {
             "type": "command",
-            "command": "/home/akhil/work/Dev/claude-code-config/.claude/hooks/secret-scan-git.sh",
+            "command": "$HOME/work/Dev/claude-code-config/.claude/hooks/secret-scan-git.sh",
             "if": "Bash(git *)",
             "timeout": 30
           }
@@ -140,13 +140,13 @@
         "hooks": [
           {
             "type": "command",
-            "command": "/home/akhil/work/Dev/claude-code-config/.claude/hooks/guard-destructive.sh",
+            "command": "$HOME/work/Dev/claude-code-config/.claude/hooks/guard-destructive.sh",
             "timeout": 10,
             "onFailure": "block"
           },
           {
             "type": "command",
-            "command": "/home/akhil/work/Dev/claude-code-config/.claude/hooks/guard-prod-actions.sh",
+            "command": "$HOME/work/Dev/claude-code-config/.claude/hooks/guard-prod-actions.sh",
             "timeout": 10
           }
         ]
@@ -156,7 +156,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "/home/akhil/work/Dev/claude-code-config/.claude/hooks/protect-files.sh",
+            "command": "$HOME/work/Dev/claude-code-config/.claude/hooks/protect-files.sh",
             "timeout": 10
           }
         ]
@@ -168,12 +168,12 @@
         "hooks": [
           {
             "type": "command",
-            "command": "/home/akhil/work/Dev/claude-code-config/.claude/hooks/note-verification.sh",
+            "command": "$HOME/work/Dev/claude-code-config/.claude/hooks/note-verification.sh",
             "timeout": 10
           },
           {
             "type": "command",
-            "command": "/home/akhil/work/Dev/claude-code-config/.claude/hooks/bash-audit-log.sh",
+            "command": "$HOME/work/Dev/claude-code-config/.claude/hooks/bash-audit-log.sh",
             "async": true
           }
         ]
@@ -183,7 +183,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "/home/akhil/work/Dev/claude-code-config/.claude/hooks/bash-audit-log.sh",
+            "command": "$HOME/work/Dev/claude-code-config/.claude/hooks/bash-audit-log.sh",
             "async": true
           }
         ]
@@ -193,7 +193,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "/home/akhil/work/Dev/claude-code-config/.claude/hooks/format-on-edit.sh",
+            "command": "$HOME/work/Dev/claude-code-config/.claude/hooks/format-on-edit.sh",
             "timeout": 30
           }
         ]
@@ -205,12 +205,12 @@
         "hooks": [
           {
             "type": "command",
-            "command": "/home/akhil/work/Dev/claude-code-config/.claude/hooks/note-verification.sh",
+            "command": "$HOME/work/Dev/claude-code-config/.claude/hooks/note-verification.sh",
             "timeout": 10
           },
           {
             "type": "command",
-            "command": "/home/akhil/work/Dev/claude-code-config/.claude/hooks/bash-audit-log.sh",
+            "command": "$HOME/work/Dev/claude-code-config/.claude/hooks/bash-audit-log.sh",
             "async": true
           }
         ]
@@ -221,7 +221,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "/home/akhil/work/Dev/claude-code-config/.claude/hooks/capture-lesson.sh",
+            "command": "$HOME/work/Dev/claude-code-config/.claude/hooks/capture-lesson.sh",
             "timeout": 10
           }
         ]
@@ -233,7 +233,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "/home/akhil/work/Dev/claude-code-config/.claude/hooks/session-start.sh",
+            "command": "$HOME/work/Dev/claude-code-config/.claude/hooks/session-start.sh",
             "timeout": 10
           }
         ]
@@ -243,7 +243,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "/home/akhil/work/Dev/claude-code-config/.claude/hooks/session-context.sh",
+            "command": "$HOME/work/Dev/claude-code-config/.claude/hooks/session-context.sh",
             "timeout": 10
           }
         ]
@@ -254,7 +254,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "/home/akhil/work/Dev/claude-code-config/.claude/hooks/verify-gate.sh",
+            "command": "$HOME/work/Dev/claude-code-config/.claude/hooks/verify-gate.sh",
             "timeout": 15
           }
         ]
@@ -265,7 +265,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "/home/akhil/work/Dev/claude-code-config/.claude/hooks/notify.sh",
+            "command": "$HOME/work/Dev/claude-code-config/.claude/hooks/notify.sh",
             "timeout": 10
           }
         ]
@@ -274,7 +274,7 @@
   },
   "statusLine": {
     "type": "command",
-    "command": "/home/akhil/work/Dev/claude-code-config/.claude/statusline.sh",
+    "command": "$HOME/work/Dev/claude-code-config/.claude/statusline.sh",
     "padding": 1
   },
   "enabledPlugins": {

@@ -96,6 +96,25 @@ for dir in rules skills; do
     create_symlink "$DOTFILES_DIR/.claude/$dir" "$HOME/.claude/$dir"
 done
 
+# 7b. Machine facts. rules/machine.md (gitignored) links to machines/<os>.md so each machine loads its
+#     own disk layout and toolchain notes. The Linux file describes the author's Arch machine.
+case "$(uname -s)" in
+    Darwin) machine="macos" ;;
+    Linux)  machine="linux-arch" ;;
+    *)      machine="" ;;
+esac
+echo ""
+echo "🖥  Setting up machine facts..."
+if [ -n "$machine" ]; then
+    ln -sfn "../machines/$machine.md" "$DOTFILES_DIR/.claude/rules/machine.md"
+    echo -e "${GREEN}✓${NC} rules/machine.md -> machines/$machine.md"
+    if [ "$machine" = "macos" ]; then
+        echo -e "${YELLOW}ℹ${NC}  machines/macos.md is a stub; the first claude session there will offer to fill it in"
+    fi
+else
+    echo -e "${YELLOW}⚠️  No machine file for $(uname -s); add .claude/machines/<name>.md and link it as rules/machine.md${NC}"
+fi
+
 # 8. Install machine-local .gitignore (REAL file, not a symlink — git won't follow
 #    a symlinked .gitignore). Protects secrets if $HOME becomes a public git repo.
 echo ""
