@@ -4,7 +4,8 @@
     "EDITOR": "vim",
     "GIT_EDITOR": "vim",
     "VERCEL_PLUGIN_TELEMETRY": "off",
-    "ENABLE_STOP_REVIEW": "0"
+    "ENABLE_STOP_REVIEW": "0",
+    "CLAUDE_CODE_DISABLE_TERMINAL_TITLE": "1"
   },
   "permissions": {
     "allow": [
